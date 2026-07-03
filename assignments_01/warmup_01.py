@@ -96,10 +96,48 @@ plt.ylabel("y")
 plt.show()
 
 # Matplotlib Q2:
+subjects = ["Math", "Science", "English", "History"]
+scores = [88, 92, 75, 83]
+
+plt.bar(subjects, scores, color="blue")
+plt.title("Subject Scores")
+plt.xlabel("Subject")
+plt.ylabel("Scores")
+
+plt.show()
+
 # Matplotlib Q3:
+x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
+x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
+
+plt.scatter(x1, y1, color="green")
+plt.scatter(x2, y2, color="blue")
+plt.title("Scatter Plot of Two Datasets")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
+
+plt.show()
+
 # Matplotlib Q4:
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
 
+# left side
+axes[0].plot(x, y)
+axes[0].set_title("Squares")
+axes[0].set_xlabel("x")
+axes[0].set_ylabel("y")
 
+# right side
+axes[1].bar(subjects, scores)
+axes[1].set_title("Subject Scores")
+axes[1].set_xlabel("Subjects")
+axes[1].set_ylabel("Scores")
+
+# Adjust spacing
+plt.tight_layout()
+
+plt.show()
 
 # --- Descriptive Statistics Review ---
 
