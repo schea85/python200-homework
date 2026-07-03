@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import statistics as stats
 
 # --- Pandas Review ---
 
@@ -81,73 +82,123 @@ print(f"\nArray Q6 Mean:\n", np.mean(q6_arr))
 print(f"\nArray Q6 STD:\n", np.std(q6_arr))
 
 
+
 # --- Matplotlib Review ---
 
-# Matplotlib Q1:
-x = [0, 1, 2, 3, 4, 5]
-y = [0, 1, 4, 9, 16, 25]
+# # Matplotlib Q1:
+# x = [0, 1, 2, 3, 4, 5]
+# y = [0, 1, 4, 9, 16, 25]
 
-plt.plot(x, y)
+# plt.plot(x, y)
 
-plt.title("Squares")
-plt.xlabel("x")
-plt.ylabel("y")
+# plt.title("Squares")
+# plt.xlabel("x")
+# plt.ylabel("y")
 
-plt.show()
+# plt.show()
 
-# Matplotlib Q2:
-subjects = ["Math", "Science", "English", "History"]
-scores = [88, 92, 75, 83]
+# # Matplotlib Q2:
+# subjects = ["Math", "Science", "English", "History"]
+# scores = [88, 92, 75, 83]
 
-plt.bar(subjects, scores, color="blue")
-plt.title("Subject Scores")
-plt.xlabel("Subject")
-plt.ylabel("Scores")
+# plt.bar(subjects, scores, color="blue")
+# plt.title("Subject Scores")
+# plt.xlabel("Subject")
+# plt.ylabel("Scores")
 
-plt.show()
+# plt.show()
 
-# Matplotlib Q3:
-x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
-x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
+# # Matplotlib Q3:
+# x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
+# x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
 
-plt.scatter(x1, y1, color="green")
-plt.scatter(x2, y2, color="blue")
-plt.title("Scatter Plot of Two Datasets")
-plt.xlabel("x")
-plt.ylabel("y")
-plt.legend()
+# plt.scatter(x1, y1, color="green")
+# plt.scatter(x2, y2, color="blue")
+# plt.title("Scatter Plot of Two Datasets")
+# plt.xlabel("x")
+# plt.ylabel("y")
+# plt.legend()
 
-plt.show()
+# plt.show()
 
-# Matplotlib Q4:
-fig, axes = plt.subplots(1, 2, figsize=(10,4))
+# # Matplotlib Q4:
+# fig, axes = plt.subplots(1, 2, figsize=(10,4))
 
-# left side
-axes[0].plot(x, y)
-axes[0].set_title("Squares")
-axes[0].set_xlabel("x")
-axes[0].set_ylabel("y")
+# # left side
+# axes[0].plot(x, y)
+# axes[0].set_title("Squares")
+# axes[0].set_xlabel("x")
+# axes[0].set_ylabel("y")
 
-# right side
-axes[1].bar(subjects, scores)
-axes[1].set_title("Subject Scores")
-axes[1].set_xlabel("Subjects")
-axes[1].set_ylabel("Scores")
+# # right side
+# axes[1].bar(subjects, scores)
+# axes[1].set_title("Subject Scores")
+# axes[1].set_xlabel("Subjects")
+# axes[1].set_ylabel("Scores")
 
-# Adjust spacing
-plt.tight_layout()
+# # Adjust spacing
+# plt.tight_layout()
 
-plt.show()
+# plt.show()
+
+
 
 # --- Descriptive Statistics Review ---
 
 # Descriptive Stats Q1:
+data_2 = [12, 15, 14, 10, 18, 22, 13, 16, 14, 15]
+print(f"\nStats Q1 Mean:\n", np.mean(data_2))
+print(f"\nStats Q1 Median:\n", np.median(data_2))
+print(f"\nStats Q1 Variance:\n", np.var(data_2))
+print(f"\nStats Q1 STD:\n", np.std(data_2))
+
 # Descriptive Stats Q2:
+data_normal = np.random.normal(65, 10, 500)
+
+plt.hist(data_normal, bins=20, color="skyblue", edgecolor="black")
+plt.title("Distribution of Scores")
+plt.xlabel("Scores")
+plt.ylabel("Frequency")
+
+plt.show()
+
 # Descriptive Stats Q3:
+group_a = [55, 60, 63, 70, 68, 62, 58, 65]
+group_b = [75, 80, 78, 90, 85, 79, 82, 88]
+
+plt.boxplot([group_a, group_b], tick_labels=["Group A", "Group B"])
+plt.title("Score Comparison")
+plt.ylabel("Score")
+
+plt.show()
+
 # Descriptive Stats Q4:
+normal_data = np.random.normal(50, 5, 200)
+skewed_data = np.random.exponential(10, 200)
+
+plt.boxplot([normal_data, skewed_data], tick_labels=["Normal", "Exponential"])
+plt.title("Distribution Comparison")
+
+plt.show()
+
+# observation
+# exponential is more skewed
+# median is a better measure of central tendency for exponential (less affected by skew and extreme values)
+# mean for normal
+
 # Descriptive Stats Q5:
+data1 = [10, 12, 12, 16, 18]
+data2 = [10, 12, 12, 16, 150]
 
+print(f"\nData1 mean:", np.mean(data1))
+print(f"\nData1 median:", np.median(data1))
+print(f"\nData1 mode:", stats.mode(data1))
 
+print(f"\nData2 mean:", np.mean(data2))
+print(f"\nData2 median:", np.median(data2))
+print(f"\nData2 mode:", stats.mode(data2))
+
+# Because of the value 150 in data2; the mean is pulled upward by the outlier.
 
 # --- Hypothesis Testing Review ---
 
