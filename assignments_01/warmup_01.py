@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import statistics as stats
+from scipy import stats
+from scipy.stats import pearsonr
+import seaborn as sns
 
 # --- Pandas Review ---
 
@@ -85,61 +88,61 @@ print(f"\nArray Q6 STD:\n", np.std(q6_arr))
 
 # --- Matplotlib Review ---
 
-# # Matplotlib Q1:
-# x = [0, 1, 2, 3, 4, 5]
-# y = [0, 1, 4, 9, 16, 25]
+# Matplotlib Q1:
+x = [0, 1, 2, 3, 4, 5]
+y = [0, 1, 4, 9, 16, 25]
 
-# plt.plot(x, y)
+plt.plot(x, y)
 
-# plt.title("Squares")
-# plt.xlabel("x")
-# plt.ylabel("y")
+plt.title("Squares")
+plt.xlabel("x")
+plt.ylabel("y")
 
-# plt.show()
+plt.show()
 
-# # Matplotlib Q2:
-# subjects = ["Math", "Science", "English", "History"]
-# scores = [88, 92, 75, 83]
+# Matplotlib Q2:
+subjects = ["Math", "Science", "English", "History"]
+scores = [88, 92, 75, 83]
 
-# plt.bar(subjects, scores, color="blue")
-# plt.title("Subject Scores")
-# plt.xlabel("Subject")
-# plt.ylabel("Scores")
+plt.bar(subjects, scores, color="blue")
+plt.title("Subject Scores")
+plt.xlabel("Subject")
+plt.ylabel("Scores")
 
-# plt.show()
+plt.show()
 
-# # Matplotlib Q3:
-# x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
-# x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
+# Matplotlib Q3:
+x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
+x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
 
-# plt.scatter(x1, y1, color="green")
-# plt.scatter(x2, y2, color="blue")
-# plt.title("Scatter Plot of Two Datasets")
-# plt.xlabel("x")
-# plt.ylabel("y")
-# plt.legend()
+plt.scatter(x1, y1, color="green")
+plt.scatter(x2, y2, color="blue")
+plt.title("Scatter Plot of Two Datasets")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.legend()
 
-# plt.show()
+plt.show()
 
-# # Matplotlib Q4:
-# fig, axes = plt.subplots(1, 2, figsize=(10,4))
+# Matplotlib Q4:
+fig, axes = plt.subplots(1, 2, figsize=(10,4))
 
-# # left side
-# axes[0].plot(x, y)
-# axes[0].set_title("Squares")
-# axes[0].set_xlabel("x")
-# axes[0].set_ylabel("y")
+# left side
+axes[0].plot(x, y)
+axes[0].set_title("Squares")
+axes[0].set_xlabel("x")
+axes[0].set_ylabel("y")
 
-# # right side
-# axes[1].bar(subjects, scores)
-# axes[1].set_title("Subject Scores")
-# axes[1].set_xlabel("Subjects")
-# axes[1].set_ylabel("Scores")
+# right side
+axes[1].bar(subjects, scores)
+axes[1].set_title("Subject Scores")
+axes[1].set_xlabel("Subjects")
+axes[1].set_ylabel("Scores")
 
-# # Adjust spacing
-# plt.tight_layout()
+# Adjust spacing
+plt.tight_layout()
 
-# plt.show()
+plt.show()
 
 
 
@@ -203,19 +206,95 @@ print(f"\nData2 mode:", stats.mode(data2))
 # --- Hypothesis Testing Review ---
 
 # Hypothesis Q1:
+group_a = [72, 68, 75, 70, 69, 73, 71, 74]
+group_b = [80, 85, 78, 83, 82, 86, 79, 84]
+
+t_stat, p_val = stats.ttest_ind(group_a, group_b)
+
+print("\nt-statistic:", t_stat)
+print("\np-value:", p_val)
+
 # Hypothesis Q2:
+alpha = 0.05
+
+if p_val < alpha:
+    print("The difference is statistically significant.\n")
+else:
+    print("No statistically significant difference detected.\n")
+    
 # Hypothesis Q3:
+before = [60, 65, 70, 58, 62, 67, 63, 66]
+after  = [68, 70, 76, 65, 69, 72, 70, 71]
+
+t_stat2, p_val2 = stats.ttest_rel(before, after)
+
+print(f"t-statistic: {t_stat2:.3f}")
+print(f"p-value: {p_val2:.6f}\n")
+
 # Hypothesis Q4:
+scores = [72, 68, 75, 70, 69, 74, 71, 73]
+
+t_stat3, p_val3 = stats.ttest_1samp(scores, 70)
+
+print(f"t-statistic: {t_stat3:.3f}")
+print(f"p-value: {p_val3:.6f}\n")
+
 # Hypothesis Q5:
+t_stat4, p_val4 = stats.ttest_ind(group_a, group_b, alternative="less")
+
+print(f"One tailed p-value: {p_val4:.6f}\n")
+
 # Hypothesis Q6:
+print("The results suggest that Group B scored significantly higher than Group A, and this difference is unlikely to be due to chance.")
 
 
 
 # --- Correlation Review ---
 
 # Correlation Q1:
-# Correlation Q2:
-# Correlation Q3:
-# Correlation Q4:
-# Correlation Q5:
+x = [1, 2, 3, 4, 5]
+y = [2, 4, 6, 8, 10]
 
+corr_matrix = np.corrcoef(x, y)
+print("Correlation matrix:", corr_matrix)
+# correlation coefficient (x vs y)
+corr_value = corr_matrix[0, 1]
+print("\nCorrelation coefficient:", corr_value)
+# Expected correlation to be 1 because y is a perfect linear transformation of x
+# Positive correlation; as x increases so does y
+
+# Correlation Q2:
+x = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10]
+y = [10, 9,  7,  8,  6,  5,  3,  4,  2,  1]
+
+corr, p_value = pearsonr(x, y)
+
+print("\nCorrelation coefficient:", corr)
+print("P-value:", p_value)
+
+# Correlation Q3:
+people = {
+    "height": [160, 165, 170, 175, 180],
+    "weight": [55,  60,  65,  72,  80],
+    "age":    [25,  30,  22,  35,  28]
+}
+df = pd.DataFrame(people)
+corr2 = df.corr()
+print("Correlation matrix:\n", corr2)
+
+# Correlation Q4:
+x = [10, 20, 30, 40, 50]
+y = [90, 75, 60, 45, 30]
+
+plt.scatter(x, y, color="orange")
+plt.title("Negative Correlation")
+plt.xlabel("x")
+plt.ylabel("y")
+
+plt.show()
+
+# Correlation Q5:
+sns.heatmap(corr2, annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Correlation Heatmap")
+
+plt.show()
