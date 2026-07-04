@@ -298,3 +298,42 @@ sns.heatmap(corr2, annot=True, cmap="coolwarm", fmt=".2f")
 plt.title("Correlation Heatmap")
 
 plt.show()
+
+
+
+# --- Pipeline Q1 ---
+arr = np.array([12.0, 15.0, np.nan, 14.0, 10.0, np.nan, 18.0, 14.0, 16.0, 22.0, np.nan, 13.0])
+
+# step 1
+def create_series(arr):
+    values = pd.Series(arr, name="values")
+    return values
+
+# step 2
+def clean_data(series):
+    df_cleaned =  series.dropna()
+    return df_cleaned
+
+# step 3
+def summarize_data(series):
+    return {
+        "mean": series.mean(),
+        "median": series.median(),
+        "std": series.std(),
+        "mode": series.mode()[0]
+    }
+    
+# pipeline
+def data_pipeline(arr):
+    series = create_series(arr)
+    cleaned_series = clean_data(series)
+    summary = summarize_data(cleaned_series)
+    return summary
+
+# run pipeline
+result = data_pipeline(arr)
+
+# print
+print("\nPipeline Q1:\n")
+for key, value in result.items():
+    print(f"{key}: {value}")
