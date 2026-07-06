@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from prefect import flow, task
 from prefect.runtime import task_run
 from prefect.logging import get_run_logger
@@ -54,4 +56,51 @@ def get_stats(merged_happiness):
         "median": median,
         "std": std
     }
-   
+
+# --- TASK 3: ---
+@task
+def create_visuals(merged_happiness):
+    logger = get_run_logger()
+    
+    # histogram
+    plt.hist(merged_happiness["Happiness score"], bins=10, color="purple", edgecolor="black")
+    plt.title("Happiness Scores Histogram")
+    plt.xlabel("Happiness Score")
+    plt.ylabel("Frequency")
+    # save histogram
+    plt.savefig("assignments_01/outputs/happiness_histogram.png")
+    logger.info("Histogram saved.")
+    plt.close()
+    
+    # boxplot
+    plt.figure()
+    merged_happiness.boxplot(column="Happiness score", by="year")
+    plt.title("Boxplot")
+    plt.xlabel("Year")
+    plt.ylabel("Happiness Score")
+    # save boxplot
+    plt.savefig("assignments_01/outputs/happiness_by_year.png")
+    logger.info("Boxplot saved.")
+    plt.close()
+    
+    # scatter plot
+    plt.scatter(merged_happiness["GDP per capita"], merged_happiness["Happiness score"], color="green")
+    plt.title("GDP vs Happiness score")
+    plt.xlabel("GDP per capita")
+    plt.ylabel("Happiness Score")
+    # save scatter plot
+    plt.savefig("assignments_01/outputs/gdp_vs_happiness.png")
+    logger.info("Scatter plot saved.")
+    plt.close()
+    
+    # heatmap
+    plt.figure(figsize=(10,8))
+    numeric_df = merged_happiness.select_dtypes(include="number") 
+    corr = numeric_df.corr()
+    sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
+    plt.title("Correlation Heatmap")
+    # save heatmap
+    plt.savefig("assignments_01/outputs/correlation_heatmap.png")
+    logger.info("Heatmap saved.")
+    plt.close()
+    
