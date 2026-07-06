@@ -30,14 +30,14 @@ def summarize_data(series):
     
 # pipeline
 @flow
-def data_pipeline(arr):
+def pipeline_flow(arr):
     series = create_series(arr)
     cleaned_series = clean_data(series)
     summary = summarize_data(cleaned_series)
     return summary
     
 if __name__ == "__main__":
-    data_pipeline(arr)
+    pipeline_flow(arr)
     
 # This pipeline is simple -- just three small functions on a handful of numbers.
 # Why might Prefect be more overhead than it is worth here?

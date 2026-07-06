@@ -24,6 +24,8 @@ def load_data():
         
         if 'Ladder score' in df.columns:
             df = df.rename(columns={'Ladder score': 'Happiness score'})
+            
+        happiness_dfs.append(df)
         
     # concat dfs
     merged_happiness = pd.concat(happiness_dfs).reset_index(drop=True)
