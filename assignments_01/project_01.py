@@ -20,7 +20,6 @@ def load_data():
         file = f"csv/world_happiness_{year}.csv"
         df = pd.read_csv(file, sep=";", decimal=",")
         df["year"] = year
-        happiness_dfs.append(df)
         
         if 'Ladder score' in df.columns:
             df = df.rename(columns={'Ladder score': 'Happiness score'})
@@ -28,9 +27,9 @@ def load_data():
         happiness_dfs.append(df)
         
     # concat dfs
-    merged_happiness = pd.concat(happiness_dfs).reset_index(drop=True)
-
-    merged_happiness.to_csv("outputs/merged_happiness.csv")
+    merged_happiness = pd.concat(happiness_dfs, ignore_index=True)
+    
+    merged_happiness.to_csv("outputs/merged_happiness.csv", index=False)
     
     return merged_happiness
     
