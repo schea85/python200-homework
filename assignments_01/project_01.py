@@ -25,7 +25,7 @@ def load_data():
     # concat dfs
     merged_happiness = pd.concat(happiness_dfs).reset_index(drop=True)
 
-    merged_happiness.to_csv("assignments_01/outputs/merged_happiness.csv")
+    merged_happiness.to_csv("outputs/merged_happiness.csv")
     
     return merged_happiness
     
@@ -70,7 +70,7 @@ def create_visuals(merged_happiness):
     plt.xlabel("Happiness Score")
     plt.ylabel("Frequency")
     # save histogram
-    plt.savefig("assignments_01/outputs/happiness_histogram.png")
+    plt.savefig("outputs/happiness_histogram.png")
     logger.info("Histogram saved.")
     plt.close()
     
@@ -81,7 +81,7 @@ def create_visuals(merged_happiness):
     plt.xlabel("Year")
     plt.ylabel("Happiness Score")
     # save boxplot
-    plt.savefig("assignments_01/outputs/happiness_by_year.png")
+    plt.savefig("outputs/happiness_by_year.png")
     logger.info("Boxplot saved.")
     plt.close()
     
@@ -91,7 +91,7 @@ def create_visuals(merged_happiness):
     plt.xlabel("GDP per capita")
     plt.ylabel("Happiness Score")
     # save scatter plot
-    plt.savefig("assignments_01/outputs/gdp_vs_happiness.png")
+    plt.savefig("outputs/gdp_vs_happiness.png")
     logger.info("Scatter plot saved.")
     plt.close()
     
@@ -102,7 +102,7 @@ def create_visuals(merged_happiness):
     sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Correlation Heatmap")
     # save heatmap
-    plt.savefig("assignments_01/outputs/correlation_heatmap.png")
+    plt.savefig("outputs/correlation_heatmap.png")
     logger.info("Heatmap saved.")
     plt.close()
     
@@ -174,7 +174,7 @@ def corr_and_compare(merged_happiness):
     results = []
     
     for variable in variables:
-        x = merged_happiness(variable)
+        x = merged_happiness[variable]
         y = happiness_score
         
         r, p = pearsonr(x, y)
@@ -198,5 +198,88 @@ def corr_and_compare(merged_happiness):
     return results
         
 # --- TASK 6 ---
-      
+@task
+def summary_report(merged_happiness, t_test_results, corr_results):
+    logger = get_run_logger()
+    
+    # total number of countries
+    num_of_countries = merged_happiness["Country"].nunique()
+    logger.info(f"Number of countries: {num_of_countries}")
+    
+    # total number of years
+    num_of_years = merged_happiness["year"].nunique()
+    logger.info(f"Number of years in dataset: {num_of_years}")
+    
+    # top/bottom 3 regions
+    region_means = merged_happiness.groupby("Regional indicator")["Happiness score"].mean()
+    
+    sorted_regions = region_means.sort_values(ascending=False)
+    
+    top_3 = sorted_regions.head(3)
+    bottom_3 = sorted_regions.tail(3)
+    
+    logger.info(f"Top 3 happiest regions:\n{top_3}")
+    logger.info(f"Bottom 3 happiest regions:\n{bottom_3}")
+    
+    # t-test interpretation (2019 vs 2020)
+    t_stat = t_test_results["t_stat_2019_2020"]
+    p_val = t_test_results["p_val_2019_2020"]
+
+    score_2019 = merged_happiness.loc[merged_happiness["year"] == 2019, "Happiness score"]
+    score_2020 = merged_happiness.loc[merged_happiness["year"] == 2020, "Happiness score"]
+
+    mean_2019 = score_2019.mean()
+    mean_2020 = score_2020.mean()
+
+    logger.info(f"2019 mean: {mean_2019:.3f}")
+    logger.info(f"2020 mean: {mean_2020:.3f}")
+    logger.info(f"t-statistic: {t_stat:.3f}")
+    logger.info(f"p-value: {p_val:.6f}")
+
+    if p_val < 0.05:
+        logger.info(
+            "There was a statistically significant difference in happiness between 2019 and 2020."
+        )
+    else:
+        logger.info(
+            "There was no statistically significant difference in happiness between 2019 and 2020."
+        )
+
+    # strongest correlation
+    significant = [r for r in corr_results if r["sig_bonf"]]
+
+    if significant:
+        strongest = max(significant, key=lambda x: abs(x["r"]))
+
+        logger.info(
+            f"Strongest correlation after Bonferroni correction: "
+            f"{strongest['variable']} (r = {strongest['r']:.3f})"
+        )
+    else:
+        logger.info("No variables remained significant after Bonferroni correction.")
+
+    return {
+        "num_countries": num_of_countries,
+        "num_years": num_of_years,
+        "t_test_2019_2020": {
+            "t_stat": t_stat,
+            "p_val": p_val,
+            "mean_2019": mean_2019,
+            "mean_2020": mean_2020
+        },
+        "strongest_corr": strongest if significant else None
+    }
+
+# pipeline
+@flow
+def happiness_pipeline():
+    all_data = load_data()
+    get_stats(all_data)
+    create_visuals(all_data)
+    t_test_results = hypothesis_test(all_data)
+    corr_results = corr_and_compare(all_data)
+    summary_report(all_data, t_test_results, corr_results)
+    
+if __name__ == "__main__":
+    happiness_pipeline()
     
