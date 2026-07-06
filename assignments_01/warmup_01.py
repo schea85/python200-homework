@@ -30,7 +30,7 @@ df["grade_curved"] = df["grade"] + 5
 print(f"\nCurved grades:\n", df)
 
 # Pandas Q4:
-df["name_upper"] = df["name"].apply(str.upper)
+df["name_upper"] = df["name"].str.upper()
 print(f"\nDF w/ Uppercase Name Column:\n", df.loc[:, ["name", "name_upper"]])
 
 # Pandas Q5:
@@ -115,8 +115,8 @@ plt.show()
 x1, y1 = [1, 2, 3, 4, 5], [2, 4, 5, 4, 5]
 x2, y2 = [1, 2, 3, 4, 5], [5, 4, 3, 2, 1]
 
-plt.scatter(x1, y1, color="green")
-plt.scatter(x2, y2, color="blue")
+plt.scatter(x1, y1, color="green", label="Dataset 1")
+plt.scatter(x2, y2, color="blue", label="Dataset 2")
 plt.title("Scatter Plot of Two Datasets")
 plt.xlabel("x")
 plt.ylabel("y")
