@@ -19,7 +19,8 @@ salary_predicted = model.predict(new_years)
 
 print("Slope:", model.coef_[0])
 print("Intercept:", model.intercept_)
-print("Predicted salaries:", salary_predicted)
+print("Predicted salary for 4 years experience:", round(salary_predicted[0], 2))
+print("Predicted salary for 8 years experience:", round(salary_predicted[1], 2))
 
 # scikit-learn Q2:
 x = np.array([10, 20, 30, 40, 50])
@@ -119,7 +120,9 @@ y_pred_full = model_full.predict(X_test_f)
 
 plt.scatter(y_pred_full, y_test_f)
 
-plt.plot([0, 120000], [0, 120000])
+# create diagonal reference line
+min_value = min(y_pred_full.min(), y_test_f.min())
+max_value = max(y_pred_full.max(), y_test_f.max())
 
 plt.plot([min_value, max_value], [min_value, max_value])
 
