@@ -98,3 +98,23 @@ plt.show()
 #   the r numbers are closer to 0.
 
 # --- TASK 4 ---
+X = df_clean[["failures"]]
+y = df_clean["G3"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+rmse = np.sqrt(np.mean((y_pred - y_test) ** 2))
+r2 = model.score(X_test, y_test)              
+
+print("Slope:", round(model.coef_[0], 4))
+print("RMSE:", round(rmse, 4))
+print("R²:", round(r2, 4))
+#   the slope shows that there is a negative correlation
+#   the RMSE shows the average prediction error in grade points
+#   the low R² suggests failures alone does not explain much of the variation in G3
