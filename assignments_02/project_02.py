@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from sklearn.datasets import make_blobs
 from sklearn.model_selection import train_test_split
 from scipy.stats import pearsonr
+import seaborn as sns
 
 # Pre-preprocessing
 #   ; semicolon used for separator 
@@ -38,10 +39,10 @@ print("Dataset after filtering out G3=0:", df_clean.shape)
 #   performance, which will distort predictions.
 
 # convert yes/no columns to binary 0/1 columns
-df_clean[["schoolsup", "internet", "higher", "activities"]] = df_clean[["schoolsup", "internet", "higher", "activities"]].replace({"yes": 1, "no": 0})
+df_clean[["schoolsup", "internet", "higher", "activities"]] = df_clean[["schoolsup", "internet", "higher", "activities"]].replace({"yes": 1, "no": 0}).astype(int)
 
 # convert gender column to binary 0/1 column
-df_clean["sex"] = df_clean["sex"].replace({"F": 0, "M": 1})
+df_clean["sex"] = df_clean["sex"].replace({"F": 0, "M": 1}).astype(int)
 
 # pearson correlations
 r1, p1 = pearsonr(df["absences"], df["G3"])
@@ -53,4 +54,47 @@ print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
 #   the true relationship b/w absences and final grades.
 
 # --- TASK 3 ---
+# create loop to compute pearson
+features = [
+    "age", "Medu", "Fedu", "traveltime", "studytime", "failures", "absences", "freetime",
+    "goout", "Walc", "schoolsup", "internet", "higher", "activities", "sex"
+]
+results = []
 
+for feature in features:
+    r, p = pearsonr(df_clean[f"{feature}"], df_clean["G3"])
+    results.append((feature, round(r, 4), round(p, 4)))
+    
+results.sort(key = lambda x: x[1])
+
+# sort pearson/r values
+for feature, r, p in results:
+    print(feature, r)
+    
+# visualization 1 - scatter
+plt.scatter(df_clean["failures"], df_clean["G3"], color="green")
+plt.title("Past Failures vs Final Grade (G3)")
+plt.xlabel("Number of Past Failures")
+plt.ylabel("Final Grade (G3)")
+
+plt.savefig("assignments_02/outputs/failures_vs_g3_scatter.png")
+plt.show()
+#   This scatter plot looks different from the others I've seen.
+#   This scatter plot shows a weak negative relationship between past failures and final grades.
+#   Students with more past failures generally have lower Final Grade (G3).
+#   Past failures is probably one of the many factors contributing to student's over Final Grade.
+
+# visualization 2 - heatmap
+plt.figure(figsize=(12, 8))
+
+corr = df_clean.corr()
+
+sns.heatmap(corr, annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Correlation Heatmap")
+
+plt.savefig("assignments_02/outputs/g3_heatmap.png")
+plt.show()
+#   overall, these are weak negative and positive correlations.
+#   the r numbers are closer to 0.
+
+# --- TASK 4 ---
