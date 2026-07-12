@@ -68,6 +68,7 @@ for feature in features:
 results.sort(key = lambda x: x[1])
 
 # sort pearson/r values
+print("\nPearson correlations with G3:")
 for feature, r, p in results:
     print(feature, r)
     
