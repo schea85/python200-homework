@@ -57,7 +57,7 @@ print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
 # create loop to compute pearson
 features = [
     "age", "Medu", "Fedu", "traveltime", "studytime", "failures", "absences", "freetime",
-    "goout", "Walc", "schoolsup"
+    "goout", "Walc"
 ]
 results = []
 
