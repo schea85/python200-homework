@@ -51,7 +51,7 @@ print(f"Pearson before filtering: r={r1:.4f}, p={p1:.4f}")
 print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
 #   G3 = 0 represents students who did not take the final exam, not a true grade of zero.
 #   Keeping these rows would distort the model because it would learn that missing 
-#   the exam means poor performance instead of predicting actual grades.
+#   the exam means poor performance instead of predicting actual grades. (we can use absences)
 
 # --- TASK 3 ---
 # create loop to compute pearson
@@ -188,16 +188,20 @@ plt.plot([min_value, max_value],
 plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
+#   Comments:
 #   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
 #   2.67 means the model is usually off by about 2.7 points when predicting grades
 #   on a 0-20 scale. The test R² of 0.259 means the model explains about 25.9% of the variation in
-#   final grades. Internet (+1.087) had the biggest positive coefficient, meaning
-#   they are associated with higher predicted grades.
-#   Schoolsup (-2.127) had the largest negative coefficient,
-#   meaning that they are associated with lower predicted grades. The negative schoolsup
-#   result was surprising, but students receiving extra support may already be
-#   struggling. Points above the diagonal mean the model predicted too low, while
-#   points below mean it predicted too high.
+#   final grades. 
+#   The two features with the largest positive coefficients are Internet (+1.087) 
+#   and sex (.412), meaning they are associated with higher predicted grades.
+#   While Schoolsup (-2.127) and failures (-.855) are the largest negative coefficient,
+#   meaning they pull predictions downward. 
+#   The negative schoolsup result was surprising, but students receiving extra support may already be
+#   struggling. 
+#   Points that fall above the diagonal mean the model under-predicted.
+#   Points below the line mean the model over-predicted.
+#   The model seems be roughly uniform across grade levels.
 
 # --- Neglected Feature: The Power of G1 ---
 feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
