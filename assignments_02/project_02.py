@@ -188,7 +188,7 @@ plt.plot([min_value, max_value],
 plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
-#   Comments:
+#   Summary:
 #   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
 #   2.67 means the model is usually off by about 2.7 points when predicting grades
 #   on a 0-20 scale. The test R² of 0.259 means the model explains about 25.9% of the variation in
@@ -205,7 +205,9 @@ plt.show()
 
 # --- Neglected Feature: The Power of G1 ---
 feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                   "internet", "sex", "freetime", "activities", "traveltime", "G1"]
+                "internet", "sex", "freetime", "activities", "traveltime", "goout",
+                "Walc", "absences", "G1"
+                ]
 X_g1 = df_clean[feature_cols_g1].values
 y_g1 = df_clean["G3"].values
 

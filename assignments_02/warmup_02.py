@@ -28,6 +28,8 @@ print("Original Shape:", x.shape)
 x_2 = np.array([10, 20, 30, 40, 50]).reshape(-1, 1)
 print("Reshaped:", x_2.shape)
 # X must be 2D because each row represents one sample and each column represents one feature.
+# allows algorithms to map relationships, learn complex geometry, and extract meaningful
+# patterns.
 
 # scikit-learn Q3:
 X_clusters, _ = make_blobs(n_samples=120, centers=3, cluster_std=0.8, random_state=7)
