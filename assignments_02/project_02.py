@@ -49,9 +49,9 @@ r1, p1 = pearsonr(df["absences"], df["G3"])
 r2, p2 = pearsonr(df_clean["absences"], df_clean["G3"])
 print(f"Pearson before filtering: r={r1:.4f}, p={p1:.4f}")
 print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
-#   filtering out the G3 = 0 changes the correlation b/c those students missed the final exam.
-#   Their 0 grades are due to absence, not poor academic performance, so including them weakens
-#   the true relationship b/w absences and final grades.
+#   G3 = 0 represents students who did not take the final exam, not a true grade of zero.
+#   Keeping these rows would distort the model because it would learn that missing 
+#   the exam means poor performance instead of predicting actual grades.
 
 # --- TASK 3 ---
 # create loop to compute pearson
@@ -94,8 +94,9 @@ plt.title("Correlation Heatmap")
 
 plt.savefig("assignments_02/outputs/g3_heatmap.png")
 plt.show()
-#   overall, these are weak negative and positive correlations.
-#   the r numbers are closer to 0.
+#   The heatmap shows mostly weak positive and negative correlations. Failures and absences
+#   have the strongest negative relationships with G3, while Medu and Fedu have small
+#   positive relationships with final grades.
 
 # --- TASK 4 ---
 X = df_clean[["failures"]]
@@ -121,7 +122,9 @@ print("R²:", round(r2, 4))
 
 # --- TASK 5 ---
 feature_cols = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                "internet", "sex", "freetime", "activities", "traveltime"]
+                "internet", "sex", "freetime", "activities", "traveltime", "goout",
+                "Walc", "absences"
+                ]
 X = df_clean[feature_cols].values
 y = df_clean["G3"].values
 
@@ -147,11 +150,12 @@ print(f"Task5 Test R²: {r2_test}\n")
 
 for name, coef in zip(feature_cols, model_multi.coef_):
     print(f"{name:12s}: {coef:+.3f}")
-#   schoolsup has a negative coefficient, which is surprising.  Possibly, because
+    
+#   Internet and higher had the largest positive coefficients, while
+#   schoolsup and failures had the largest negative coefficients, which is surprising.  Possibly, because
 #   if students are getting extra school support they were already struggling academically.
-
 #   I would keep features like failures, studytime, higher, and internet because they had larger
-#   coefficients, and consider dropping activities and freetime because they had
+#   coefficients, and consider dropping features like freetime because they had
 #   little impact on predictions.
 
 # --- TASK 6 ----
@@ -173,11 +177,11 @@ plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
 #   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
-#   2.855 means the model is usually off by about 2.9 points when predicting grades
-#   on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of the variation in
-#   final grades. Internet (+0.834) and higher (+0.610) had the biggest positive coefficients, meaning
+#   2.67 means the model is usually off by about 2.7 points when predicting grades
+#   on a 0-20 scale. The test R² of 0.259 means the model explains about 125.9% of the variation in
+#   final grades. Internet (+1.087) had the biggest positive coefficient, meaning
 #   they are associated with higher predicted grades.
-#   Schoolsup (-2.062) and failures (-1.145) had the largest negative coefficients,
+#   Schoolsup (-2.127) had the largest negative coefficient,
 #   meaning that they are associated with lower predicted grades. The negative schoolsup
 #   result was surprising, but students receiving extra support may already be
 #   struggling. Points above the diagonal mean the model predicted too low, while
