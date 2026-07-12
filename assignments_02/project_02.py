@@ -158,23 +158,48 @@ for name, coef in zip(feature_cols, model_multi.coef_):
 plt.figure(figsize=(8, 6))
 
 plt.scatter(y_pred, y_test_m)
-plt.title("Predicted vs Actual")
+plt.title("Predicted vs Actual (Full Model)")
 plt.xlabel("Predicted G3")
 plt.ylabel("Actual G3")
 
 min_value = min(y_pred.min(), y_test_m.min())
 max_value = max(y_pred.max(), y_test_m.max())
 
+plt.plot([min_value, max_value],
+         [min_value, max_value],
+         color="red")
+
 plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
-# The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
-# 2.855 means the model is usually off by about 2.9 points when predicting grades
-# on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of
-# the grade differences. Internet had the biggest positive effect (+0.834), and
-# schoolsup had the biggest negative effect (-2.062). The negative schoolsup
-# result was surprising, but students receiving extra support may already be
-# struggling. Points above the diagonal mean the model predicted too low, while
-# points below mean it predicted too high.
+#   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
+#   2.855 means the model is usually off by about 2.9 points when predicting grades
+#   on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of
+#   the grade differences. Internet had the biggest positive effect (+0.834), and
+#   schoolsup had the biggest negative effect (-2.062). The negative schoolsup
+#   result was surprising, but students receiving extra support may already be
+#   struggling. Points above the diagonal mean the model predicted too low, while
+#   points below mean it predicted too high.
 
 # --- Neglected Feature: The Power of G1 ---
+feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
+                   "internet", "sex", "freetime", "activities", "traveltime", "G1"]
+X_g1 = df_clean[feature_cols_g1].values
+y_g1 = df_clean["G3"].values
+
+X_train_g1, X_test_g1, y_train_g1, y_test_g1 = train_test_split(
+    X_g1, y_g1, test_size=0.2, random_state=42
+)
+
+model_g1 = LinearRegression()
+model_g1.fit(X_train_g1, y_train_g1)
+
+r2_g1 = model_g1.score(X_test_g1, y_test_g1)
+print("Test R² with G1:", r2_g1)
+
+#   Adding G1 greatly improves the R² because the first period grade is strongly
+#   related to the final grade. However, a high R² does not mean G1 causes G3.
+#   This model is less useful for early intervention because G1 is already a grade.
+#   To help students earlier, we would need to use other features before grades are
+#   available.
+
