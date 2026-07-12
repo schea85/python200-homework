@@ -71,7 +71,7 @@ results.sort(key = lambda x: x[1])
 for feature, r, p in results:
     print(feature, r)
     
-# visualization 1 - scatter
+# visualization 1 - scatter failures vs g3
 plt.scatter(df_clean["failures"], df_clean["G3"], color="green")
 plt.title("Past Failures vs Final Grade (G3)")
 plt.xlabel("Number of Past Failures")
@@ -84,7 +84,18 @@ plt.show()
 #   Students with more past failures generally have lower Final Grade (G3).
 #   Past failures is probably one of the many factors contributing to student's over Final Grade.
 
-# visualization 2 - heatmap
+# visualization 2 - scatter absences vs g3
+plt.scatter(df_clean["absences"], df_clean["G3"], color="purple")
+plt.title("Absences vs Final Grade (G3)")
+plt.xlabel("Number of Absences")
+plt.ylabel("Final Grade (G3)")
+
+plt.savefig("assignments_02/outputs/absences_vs_g3_scatter.png")
+plt.show()
+#   This scatter plot shows a weak negative relationship between absences and final grades.
+#   Students with more absences generally had slightly lower grades.
+
+# visualization 3 - heatmap
 plt.figure(figsize=(12, 8))
 
 corr = df_clean.corr()
@@ -178,7 +189,7 @@ plt.show()
 
 #   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
 #   2.67 means the model is usually off by about 2.7 points when predicting grades
-#   on a 0-20 scale. The test R² of 0.259 means the model explains about 125.9% of the variation in
+#   on a 0-20 scale. The test R² of 0.259 means the model explains about 25.9% of the variation in
 #   final grades. Internet (+1.087) had the biggest positive coefficient, meaning
 #   they are associated with higher predicted grades.
 #   Schoolsup (-2.127) had the largest negative coefficient,
