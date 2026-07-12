@@ -153,3 +153,28 @@ for name, coef in zip(feature_cols, model_multi.coef_):
 #   I would keep features like failures, studytime, higher, and internet because they had larger
 #   coefficients, and consider dropping activities and freetime because they had
 #   little impact on predictions.
+
+# --- TASK 6 ----
+plt.figure(figsize=(8, 6))
+
+plt.scatter(y_pred, y_test_m)
+plt.title("Predicted vs Actual")
+plt.xlabel("Predicted G3")
+plt.ylabel("Actual G3")
+
+min_value = min(y_pred.min(), y_test_m.min())
+max_value = max(y_pred.max(), y_test_m.max())
+
+plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
+plt.show()
+
+# The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
+# 2.855 means the model is usually off by about 2.9 points when predicting grades
+# on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of
+# the grade differences. Internet had the biggest positive effect (+0.834), and
+# schoolsup had the biggest negative effect (-2.062). The negative schoolsup
+# result was surprising, but students receiving extra support may already be
+# struggling. Points above the diagonal mean the model predicted too low, while
+# points below mean it predicted too high.
+
+# --- Neglected Feature: The Power of G1 ---
