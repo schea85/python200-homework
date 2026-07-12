@@ -57,7 +57,7 @@ print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
 # create loop to compute pearson
 features = [
     "age", "Medu", "Fedu", "traveltime", "studytime", "failures", "absences", "freetime",
-    "goout", "Walc", "schoolsup", "internet", "higher", "activities", "sex"
+    "goout", "Walc", "schoolsup"
 ]
 results = []
 
@@ -174,9 +174,11 @@ plt.show()
 
 #   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
 #   2.855 means the model is usually off by about 2.9 points when predicting grades
-#   on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of
-#   the grade differences. Internet had the biggest positive effect (+0.834), and
-#   schoolsup had the biggest negative effect (-2.062). The negative schoolsup
+#   on a 0-20 scale. The test R² of 0.154 means the model explains about 15.4% of the variation in
+#   final grades. Internet (+0.834) and higher (+0.610) had the biggest positive coefficients, meaning
+#   they are associated with higher predicted grades.
+#   Schoolsup (-2.062) and failures (-1.145) had the largest negative coefficients,
+#   meaning that they are associated with lower predicted grades. The negative schoolsup
 #   result was surprising, but students receiving extra support may already be
 #   struggling. Points above the diagonal mean the model predicted too low, while
 #   points below mean it predicted too high.
@@ -197,9 +199,7 @@ model_g1.fit(X_train_g1, y_train_g1)
 r2_g1 = model_g1.score(X_test_g1, y_test_g1)
 print("Test R² with G1:", r2_g1)
 
-#   Adding G1 greatly improves the R² because the first period grade is strongly
-#   related to the final grade. However, a high R² does not mean G1 causes G3.
-#   This model is less useful for early intervention because G1 is already a grade.
-#   To help students earlier, we would need to use other features before grades are
-#   available.
+#   Adding G1 greatly improves the R², but it does not mean G1 causes G3.  This model
+#   is not useful for early intervention because G1 is already available.  To help
+#   students earlier, educators would need to use other features before G1.
 
