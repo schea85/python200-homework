@@ -199,8 +199,7 @@ plt.show()
 
 # --- Neglected Feature: The Power of G1 ---
 feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                "internet", "sex", "freetime", "activities", "traveltime", "goout",
-                "Walc", "absences", "G1"
+                "internet", "sex", "freetime", "activities", "traveltime", "G1"
                 ]
 X_g1 = df_clean[feature_cols_g1].values
 y_g1 = df_clean["G3"].values
