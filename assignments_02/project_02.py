@@ -70,7 +70,7 @@ results.sort(key = lambda x: x[1])
 # sort pearson/r values
 print("\nPearson correlations with G3:")
 for feature, r, p in results:
-    print(feature, r)
+    print(f"Feature: {feature}, pearson: {r}")
     
 # visualization 1 - scatter failures vs g3
 plt.scatter(df_clean["failures"], df_clean["G3"], color="green")
@@ -134,8 +134,7 @@ print("R²:", round(r2, 4))
 
 # --- TASK 5 ---
 feature_cols = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                "internet", "sex", "freetime", "activities", "traveltime", "goout",
-                "Walc", "absences"
+                "internet", "sex", "freetime", "activities", "traveltime"
                 ]
 X = df_clean[feature_cols].values
 y = df_clean["G3"].values
@@ -167,7 +166,7 @@ for name, coef in zip(feature_cols, model_multi.coef_):
 #   schoolsup and failures had the largest negative coefficients, which is surprising.  Possibly, because
 #   if students are getting extra school support they were already struggling academically.
 #   I would keep features like failures, studytime, higher, and internet because they had larger
-#   coefficients, and consider dropping features like freetime because they had
+#   coefficients, and consider dropping features like activities and freetime because they had
 #   little impact on predictions.
 
 # --- TASK 6 ----
@@ -189,19 +188,14 @@ plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
 #   Summary:
-#   The filtered dataset has 357 rows and the test set has 72 rows. The RMSE of
-#   2.67 means the model is usually off by about 2.7 points when predicting grades
-#   on a 0-20 scale. The test R² of 0.259 means the model explains about 25.9% of the variation in
-#   final grades. 
-#   The two features with the largest positive coefficients are Internet (+1.087) 
-#   and sex (.412), meaning they are associated with higher predicted grades.
-#   While Schoolsup (-2.127) and failures (-.855) are the largest negative coefficient,
-#   meaning they pull predictions downward. 
-#   The negative schoolsup result was surprising, but students receiving extra support may already be
-#   struggling. 
-#   Points that fall above the diagonal mean the model under-predicted.
-#   Points below the line mean the model over-predicted.
-#   The model seems be roughly uniform across grade levels.
+#   The filtered dataset contains 357 students, with 72 in the test set.
+#   The full model achieved an RMSE of 2.86 and a test R² of 0.154,
+#   improving over the baseline model. The largest positive coefficients
+#   were internet (+0.834) and higher (+0.610), while the largest negative
+#   coefficients were schoolsup (-2.062) and failures (-1.145). A surprising
+#   result was the strong negative coefficient for schoolsup, likely because
+#   students receiving extra support were already struggling academically.
+#   Prediction errors appear to be roughly uniform across grade levels.
 
 # --- Neglected Feature: The Power of G1 ---
 feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
@@ -221,7 +215,10 @@ model_g1.fit(X_train_g1, y_train_g1)
 r2_g1 = model_g1.score(X_test_g1, y_test_g1)
 print("Test R² with G1:", r2_g1)
 
-#   Adding G1 greatly improves the R², but it does not mean G1 causes G3.  This model
-#   is not useful for early intervention because G1 is already available.  To help
-#   students earlier, educators would need to use other features before G1.
+#   Adding G1 greatly improves the test R², but this does not mean G1 causes G3.
+#   G1 is a strong predictor because it reflects a student's earlier academic
+#   performance. However, a model that relies on G1 is not useful for early
+#   intervention since G1 is only available after the first grading period.
+#   To identify students who may need support earlier, educators should use
+#   features that are available before G1 is recorded.
 
