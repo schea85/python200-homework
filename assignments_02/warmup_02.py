@@ -27,9 +27,9 @@ x = np.array([10, 20, 30, 40, 50])
 print("Original Shape:", x.shape)
 x_2 = np.array([10, 20, 30, 40, 50]).reshape(-1, 1)
 print("Reshaped:", x_2.shape)
-# X must be 2D because each row represents one sample and each column represents one feature.
-# scikit-learn requires matrix X to be 2D to maintain a predictable, unified design
-# pattern across all algorithms.
+# Scikit-learn requires X to be 2D because it expect data organized as samples(rows) and features(columns).
+# Even when using only 1 feature, the input must still have a column dimension so the model knows which
+# variables are being used for predictions.
 
 # scikit-learn Q3:
 X_clusters, _ = make_blobs(n_samples=120, centers=3, cluster_std=0.8, random_state=7)

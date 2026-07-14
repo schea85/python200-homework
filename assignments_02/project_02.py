@@ -188,14 +188,15 @@ plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
 #   Summary:
-#   The filtered dataset contains 357 students, with 72 in the test set.
-#   The full model achieved an RMSE of 2.86 and a test R² of 0.154,
-#   improving over the baseline model. The largest positive coefficients
-#   were internet (+0.834) and higher (+0.610), while the largest negative
-#   coefficients were schoolsup (-2.062) and failures (-1.145). A surprising
-#   result was the strong negative coefficient for schoolsup, likely because
-#   students receiving extra support were already struggling academically.
-#   Prediction errors appear to be roughly uniform across grade levels.
+#   After filtering out G3 = 0, the dataset contained 357 students, and the test
+#   set contained 72 students. The model achieved an RMSE of 2.86, meaning its
+#   predictions were typically about 2.9 points away from the actual grades on a
+#   0-20 scale. The test R² of 0.154 means the model explained about 15.4% of the
+#   variation in final grades. The largest positive coefficients were internet
+#   (+0.834) and higher (+0.610), while the largest negative coefficients were
+#   schoolsup (-2.062) and failures (-1.145). One surprising result was that
+#   schoolsup had a strong negative coefficient, likely because students receiving
+#   additional support may already have been struggling academically.
 
 # --- Neglected Feature: The Power of G1 ---
 feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
