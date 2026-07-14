@@ -10,7 +10,7 @@ from scipy.stats import pearsonr
 import seaborn as sns
 
 # Pre-preprocessing
-#   ; semicolon used for separator 
+# ; semicolon used for separator 
 
 # --- TASK 1 ---
 # load data
@@ -34,9 +34,9 @@ df_clean = df.copy()
 df_clean = df_clean[df_clean["G3"] != 0]
 print("Dataset before filtering out G3=0:", df.shape)
 print("Dataset after filtering out G3=0:", df_clean.shape)
-#   G3 = 0 represents students who missed the final exam, not a true score of 0 on exam.
-#   keeping these rows would allow the model to learn that absent students had extremely poor
-#   performance, which will distort predictions.
+# G3 = 0 represents students who missed the final exam, not a true score of 0 on exam.
+# keeping these rows would allow the model to learn that absent students had extremely poor
+# performance, which will distort predictions.
 
 # convert yes/no columns to binary 0/1 columns
 df_clean[["schoolsup", "internet", "higher", "activities"]] = df_clean[["schoolsup", "internet", "higher", "activities"]].replace({"yes": 1, "no": 0}).astype(int)
@@ -49,9 +49,9 @@ r1, p1 = pearsonr(df["absences"], df["G3"])
 r2, p2 = pearsonr(df_clean["absences"], df_clean["G3"])
 print(f"Pearson before filtering: r={r1:.4f}, p={p1:.4f}")
 print(f"Pearson after filtering: r={r2:.4f}, p={p2:.4f}")
-#   G3 = 0 represents students who did not take the final exam, not a true grade of zero.
-#   Keeping these rows would distort the model because it would learn that missing 
-#   the exam means poor performance instead of predicting actual grades. (we can use absences)
+# G3 = 0 represents students who did not take the final exam, not a true grade of zero.
+# Keeping these rows would distort the model because it would learn that missing 
+# the exam means poor performance instead of predicting actual grades. (we can use absences)
 
 # --- TASK 3 ---
 # create loop to compute pearson
@@ -80,10 +80,10 @@ plt.ylabel("Final Grade (G3)")
 
 plt.savefig("assignments_02/outputs/failures_vs_g3_scatter.png")
 plt.show()
-#   This scatter plot looks different from the others I've seen.
-#   This scatter plot shows a weak negative relationship between past failures and final grades.
-#   Students with more past failures generally have lower Final Grade (G3).
-#   Past failures is probably one of the many factors contributing to student's over Final Grade.
+# This scatter plot looks different from the others I've seen.
+# This scatter plot shows a weak negative relationship between past failures and final grades.
+# Students with more past failures generally have lower Final Grade (G3).
+# Past failures is probably one of the many factors contributing to student's over Final Grade.
 
 # visualization 2 - scatter absences vs g3
 plt.scatter(df_clean["absences"], df_clean["G3"], color="purple")
@@ -93,8 +93,8 @@ plt.ylabel("Final Grade (G3)")
 
 plt.savefig("assignments_02/outputs/absences_vs_g3_scatter.png")
 plt.show()
-#   This scatter plot shows a weak negative relationship between absences and final grades.
-#   Students with more absences generally had slightly lower grades.
+# This scatter plot shows a weak negative relationship between absences and final grades.
+# Students with more absences generally had slightly lower grades.
 
 # visualization 3 - heatmap
 plt.figure(figsize=(12, 8))
@@ -106,9 +106,9 @@ plt.title("Correlation Heatmap")
 
 plt.savefig("assignments_02/outputs/g3_heatmap.png")
 plt.show()
-#   The heatmap shows mostly weak positive and negative correlations. Failures and absences
-#   have the strongest negative relationships with G3, while Medu and Fedu have small
-#   positive relationships with final grades.
+# The heatmap shows mostly weak positive and negative correlations. Failures and absences
+# have the strongest negative relationships with G3, while Medu and Fedu have small
+# positive relationships with final grades.
 
 # --- TASK 4 ---
 X = df_clean[["failures"]]
@@ -128,14 +128,14 @@ r2 = model.score(X_test, y_test)
 print("Slope:", round(model.coef_[0], 4))
 print("RMSE:", round(rmse, 4))
 print("R²:", round(r2, 4))
-#   the slope shows that there is a negative correlation
-#   the RMSE shows the average prediction error in grade points
-#   the low R² suggests failures alone does not explain much of the variation in G3
+# the slope shows that there is a negative correlation
+# the RMSE shows the average prediction error in grade points
+# the low R² suggests failures alone does not explain much of the variation in G3
 
 # --- TASK 5 ---
-feature_cols = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                "internet", "sex", "freetime", "activities", "traveltime"
-                ]
+feature_cols = ["age", "Medu", "Fedu", "traveltime", "studytime", "failures",
+                "absences", "freetime", "goout", "Walc", "schoolsup",
+                "internet", "higher", "activities", "sex"]
 X = df_clean[feature_cols].values
 y = df_clean["G3"].values
 
@@ -156,18 +156,18 @@ print("Task 5 RMSE:", rmse_2)
 print("\nCompare Task4 baseline to Task5 R² test:")
 print(f"Task4 Test R²: {r2}")
 print(f"Task5 Test R²: {r2_test}\n")
-#   the full model has a higher R² than the baseline model,
-#   showing that adding more features improves prediction accuracy.
+# the full model has a higher R² than the baseline model,
+# showing that adding more features improves prediction accuracy.
 
 for name, coef in zip(feature_cols, model_multi.coef_):
     print(f"{name:12s}: {coef:+.3f}")
     
-#   Internet and higher had the largest positive coefficients, while
-#   schoolsup and failures had the largest negative coefficients, which is surprising.  Possibly, because
-#   if students are getting extra school support they were already struggling academically.
-#   I would keep features like failures, studytime, higher, and internet because they had larger
-#   coefficients, and consider dropping features like activities and freetime because they had
-#   little impact on predictions.
+# Internet and higher had the largest positive coefficients, while
+# schoolsup and failures had the largest negative coefficients, which is surprising.  Possibly, because
+# if students are getting extra school support they were already struggling academically.
+# I would keep features like failures, studytime, higher, and internet because they had larger
+# coefficients, and consider dropping features like activities and freetime because they had
+# little impact on predictions.
 
 # --- TASK 6 ----
 plt.figure(figsize=(8, 6))
@@ -187,21 +187,21 @@ plt.plot([min_value, max_value],
 plt.savefig("assignments_02/outputs/predicted_vs_actual.png")
 plt.show()
 
-#   Summary:
-#   After filtering out G3 = 0, the dataset contained 357 students, and the test
-#   set contained 72 students. The model achieved an RMSE of 2.86, meaning its
-#   predictions were typically about 2.9 points away from the actual grades on a
-#   0-20 scale. The test R² of 0.154 means the model explained about 15.4% of the
-#   variation in final grades. The largest positive coefficients were internet
-#   (+0.834) and higher (+0.610), while the largest negative coefficients were
-#   schoolsup (-2.062) and failures (-1.145). One surprising result was that
-#   schoolsup had a strong negative coefficient, likely because students receiving
-#   additional support may already have been struggling academically.
+# Summary:
+# After filtering out G3 = 0, the dataset contained 357 students, and the test
+# set contained 72 students. The model achieved an RMSE of 2.66, meaning its
+# predictions were typically about 2.7 points away from the actual grades on a
+# 0-20 scale. The test R² of 0.263 means the model explained about 26.3% of the
+# variation in final grades. The largest positive coefficients were internet
+# (+1.037) and sex (+0.402), while the largest negative coefficients were
+# schoolsup (-2.263) and failures (-0.800). One surprising result was that
+# schoolsup had a strong negative coefficient, likely because students receiving
+# additional support may already have been struggling academically.  
 
 # --- Neglected Feature: The Power of G1 ---
-feature_cols_g1 = ["failures", "Medu", "Fedu", "studytime", "higher", "schoolsup",
-                "internet", "sex", "freetime", "activities", "traveltime", "G1"
-                ]
+feature_cols_g1 = ["age", "Medu", "Fedu", "traveltime", "studytime", "failures",
+                "absences", "freetime", "goout", "Walc", "schoolsup",
+                "internet", "higher", "activities", "sex", "G1"]
 X_g1 = df_clean[feature_cols_g1].values
 y_g1 = df_clean["G3"].values
 
@@ -215,10 +215,10 @@ model_g1.fit(X_train_g1, y_train_g1)
 r2_g1 = model_g1.score(X_test_g1, y_test_g1)
 print("Test R² with G1:", r2_g1)
 
-#   Adding G1 greatly improves the test R², but this does not mean G1 causes G3.
-#   G1 is a strong predictor because it reflects a student's earlier academic
-#   performance. However, a model that relies on G1 is not useful for early
-#   intervention since G1 is only available after the first grading period.
-#   To identify students who may need support earlier, educators should use
-#   features that are available before G1 is recorded.
+# Adding G1 greatly improves the test R², but this does not mean G1 causes G3.
+# G1 is a strong predictor because it reflects a student's earlier academic
+# performance. However, a model that relies on G1 is not useful for early
+# intervention since G1 is only available after the first grading period.
+# To identify students who may need support earlier, educators should use
+# features that are available before G1 is recorded.
 
