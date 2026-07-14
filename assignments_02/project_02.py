@@ -9,8 +9,8 @@ from sklearn.model_selection import train_test_split
 from scipy.stats import pearsonr
 import seaborn as sns
 
-# Pre-preprocessing
-# ; semicolon used for separator 
+# --- Pre-preprocessing ---
+# ; semicolon used for separator in csv
 
 # --- TASK 1 ---
 # load data
@@ -162,8 +162,9 @@ print(f"Task5 Test R²: {r2_test}\n")
 for name, coef in zip(feature_cols, model_multi.coef_):
     print(f"{name:12s}: {coef:+.3f}")
     
-# Internet and higher had the largest positive coefficients, while
-# schoolsup and failures had the largest negative coefficients, which is surprising.  Possibly, because
+# Internet and higher had the largest positive coefficients, while holding the other features constant.
+# Schoolsup and failures had the largest negative coefficients, while holding the other features constant.
+# I found schoolsup surprising.  Possibly, because
 # if students are getting extra school support they were already struggling academically.
 # I would keep features like failures, studytime, higher, and internet because they had larger
 # coefficients, and consider dropping features like activities and freetime because they had
@@ -192,7 +193,8 @@ plt.show()
 # set contained 72 students. The model achieved an RMSE of 2.66, meaning its
 # predictions were typically about 2.7 points away from the actual grades on a
 # 0-20 scale. The test R² of 0.263 means the model explained about 26.3% of the
-# variation in final grades. The largest positive coefficients were internet
+# variation in final grades. 
+# The largest positive coefficients were internet
 # (+1.037) and sex (+0.402), while the largest negative coefficients were
 # schoolsup (-2.263) and failures (-0.800). One surprising result was that
 # schoolsup had a strong negative coefficient, likely because students receiving
