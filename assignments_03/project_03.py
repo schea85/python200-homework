@@ -17,6 +17,7 @@ from sklearn.metrics import (
     classification_report
 )
 from sklearn.inspection import DecisionBoundaryDisplay
+from sklearn.decomposition import PCA
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -129,3 +130,38 @@ plt.savefig("assignments_03/outputs/spam_vs_ham_capital_run_length_total.png")
 plt.show()
 
 # --- TASK 2 ---
+X = df.drop("spam_label", axis=1)
+y = df["spam_label"]
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+pca = PCA()
+pca.fit(X_train_scaled)
+
+cumulative_variance = np.cumsum(pca.explained_variance_ratio_)
+x_values = np.arange(1, 58)
+
+plt.plot(x_values, cumulative_variance)
+plt.title("Cumulative Explained Variance")
+plt.xlabel("Number of Principal Components")
+plt.ylabel("Cumulative Explained Variance")
+
+plt.savefig("assignments_03/outputs/project3_task2.png")
+plt.show()
+
+n = 0
+
+for i, variance in enumerate(cumulative_variance):
+    if variance >= 0.90:
+        n = i + 1
+        break
+print("Number of components for 90% variance:", n)
+
+X_train_pca = pca.transform(X_train_scaled)[:, :n]
+X_test_pca  = pca.transform(X_test_scaled)[:, :n]
