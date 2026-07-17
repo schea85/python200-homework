@@ -18,6 +18,8 @@ from sklearn.metrics import (
 )
 from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.decomposition import PCA
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -161,7 +163,77 @@ for i, variance in enumerate(cumulative_variance):
     if variance >= 0.90:
         n = i + 1
         break
-print("Number of components for 90% variance:", n)
+print("\nNumber of components for 90% variance:", n)
 
 X_train_pca = pca.transform(X_train_scaled)[:, :n]
 X_test_pca  = pca.transform(X_test_scaled)[:, :n]
+
+# --- TASK 3 ---
+
+# === KNeighborsClassifier - unscaled data ===
+knn1 = KNeighborsClassifier(n_neighbors=5)
+knn1.fit(X_train, y_train)
+
+preds1 = knn1.predict(X_test)
+
+print("\nKNN(unscaled) Accuracy:", accuracy_score(y_test, preds1))
+print("KNN(unscaled) Classification Report:\n", classification_report(y_test, preds1))
+
+# === KNeighborsClassifier - scaled data ===
+scaler_2 = StandardScaler()
+X_train_scaled = scaler_2.fit_transform(X_train)
+X_test_scaled = scaler_2.transform(X_test)
+
+knn2 = KNeighborsClassifier(n_neighbors=5)
+knn2.fit(X_train_scaled, y_train)
+
+preds2 = knn2.predict(X_test_scaled)
+
+print("\nKNN(scaled) Accuracy:", accuracy_score(y_test, preds2))
+print("KNN(scaled) Classification Report:\n", classification_report(y_test, preds2))
+
+# === KNeighborsClassifier - PCA reduced data ===
+knn3 = KNeighborsClassifier(n_neighbors=5)
+knn3.fit(X_train_pca, y_train)
+
+preds3 = knn3.predict(X_test_pca)
+
+print("\nKNN - PCA-reduced data Accuracy:", accuracy_score(y_test, preds3))
+print("KNN - PCA-reduced data  Classification Report:\n", classification_report(y_test, preds3))
+
+# PCA did not improve accuracy (slightly worse) nor the classification report.
+
+# === DecisionTreeClassifier ===
+max_depths = [3, 5, 10, None]
+
+for depth in max_depths:
+    dtc = DecisionTreeClassifier(max_depth=depth, random_state=42)
+    dtc.fit(X_train, y_train)
+
+    train_preds = dtc.predict(X_train)
+    test_preds = dtc.predict(X_test)
+    
+    train_acc = accuracy_score(y_train, train_preds)
+    test_acc = accuracy_score(y_test, test_preds)
+
+    print(f"\nMax Depth: {depth}")
+    print(f"Training Accuracy: {train_acc}")
+    print(f"Test Accuracy: {test_acc}")
+
+# As max_depth increases, training accuracy increases and eventually reaches nearly 100%, indicating
+# overfitting.  However, the unlimited tree achieved the highest test accuracy on this dataset,
+# so I would choose max_depth=None.
+
+dtc_final = DecisionTreeClassifier(max_depth=None, random_state=42)
+dtc_final.fit(X_train, y_train)
+
+final_preds = dtc_final.predict(X_test)
+
+print("\nFinal Decision Tree Accuracy:", accuracy_score(y_test, final_preds))
+print("\nFinal Decision Tree Classification Report:\n")
+print(classification_report(y_test, final_preds))
+
+# === RandomForestClassifier ===
+
+
+# LogisticRegression
