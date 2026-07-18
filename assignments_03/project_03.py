@@ -23,6 +23,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -404,3 +407,38 @@ print("Logistic Regression (PCA-reduced) Std:", cv_scores_7.std())
 # Random Forest provided the best overall accuracy.
 
 # --- TASK 5 ---
+knn5_pipeline = Pipeline([
+    ("scaler",     StandardScaler()), # name, object pattern
+    ("classifier", KNeighborsClassifier(n_neighbors=5))
+])
+
+# === Random Forest Pipeline ===
+rf_pipeline = Pipeline([
+    ("classifier", RandomForestClassifier(n_estimators=100, random_state=42))
+])
+rf_pipeline.fit(X_train, y_train)
+predictions_1 = rf_pipeline.predict(X_test)
+
+print("Random Forest Classification Report:")
+print(classification_report(y_test, predictions_1))
+
+# === Logistic Regression Pipeline ===
+log_reg_pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("classifier", LogisticRegression(
+        C=1.0,
+        max_iter=1000,
+        solver="liblinear"
+    ))
+])
+log_reg_pipeline.fit(X_train, y_train)
+predictions_2 = log_reg_pipeline.predict(X_test)
+
+print("Logistic Regression Classification Report:")
+print(classification_report(y_test, predictions_2))
+
+# Pipeline Summary:
+# The pipelines have different structures because Random Forest does not require
+# feature scaling, while Logistic Regression benefits from standard features.
+# Pipelines make preprocessing and modeling easier to reuse, reduce mistakes,
+# prevent data leakage, and simplify deployment.
