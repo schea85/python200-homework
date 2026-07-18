@@ -122,7 +122,6 @@ print(classification_report(y_test, tree_preds))
 # Scaling would not affect the Decision Tree b/c Decision Tree do not rely on distance
 # calculations.  They split data based on feature values, so standardized features
 # are not necessary.
-# Also, Decision Tree was not mentioned in the lessons for Week3.
 
 # --- Logistic Regression and Regularization ---
 

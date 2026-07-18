@@ -20,6 +20,8 @@ from sklearn.inspection import DecisionBoundaryDisplay
 from sklearn.decomposition import PCA
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -234,6 +236,110 @@ print("\nFinal Decision Tree Classification Report:\n")
 print(classification_report(y_test, final_preds))
 
 # === RandomForestClassifier ===
+rf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf.fit(X_train, y_train)
+
+rf_preds = rf.predict(X_test)
+
+print("\nRandom Forest Accuracy:", accuracy_score(y_test, rf_preds))
+print("\nRandom Forest Classification Report:\n")
+print(classification_report(y_test, rf_preds))
+
+# DecisionTree 10 Most Important Features
+dtc_df = pd.DataFrame({
+    "feature": X.columns,
+    "importance": dtc_final.feature_importances_
+})
+
+dtc_df = dtc_df.sort_values(
+    by="importance",
+    ascending=False
+)
+
+# top 10
+print("Decision Tree - Top 10 Most Important Features:")
+print(dtc_df.head(10))
 
 
-# LogisticRegression
+# RandomForest 10 Most Important Features
+importance_df = pd.DataFrame({
+    "feature": X.columns,
+    "importance": rf.feature_importances_
+})
+
+importance_df = importance_df.sort_values(
+    by="importance",
+    ascending=False
+)
+
+# top 10
+top10_rf = importance_df.head(10)
+print("\nRandom Forest - Top 10 Most Important Features:")
+print(top10_rf)
+
+# RandomForest bar chart
+plt.figure(figsize=(10, 6))
+plt.bar(top10_rf["feature"], top10_rf["importance"], color="skyblue", edgecolor="black")
+
+plt.title("Random Forest - Top 10 Most Important Features")
+plt.xlabel("Features")
+plt.ylabel("Importance Value")
+plt.xticks(rotation=45, ha="right")
+
+plt.savefig("assignments_03/outputs/feature_importances.png")
+plt.show()
+
+# === LogisticRegression ===
+
+# Logistic Regression - scaled
+log_reg = LogisticRegression(
+    C=1.0, 
+    max_iter=1000,
+    solver="liblinear"
+)
+
+log_reg.fit(X_train_scaled, y_train)
+
+log_preds = log_reg.predict(X_test_scaled)
+
+print("\nLogistic Regression Scaled Accuracy:", accuracy_score(y_test, log_preds))
+print("Logistic Regression Scaled Classification Report:")
+print(classification_report(y_test, log_preds))
+
+# Logistic Regression - PCA-reduced data
+
+log_reg_2 = LogisticRegression(
+    C=1.0,
+    max_iter=1000,
+    solver="liblinear"
+)
+
+log_reg_2.fit(X_train_pca, y_train)
+
+log_preds_2 = log_reg_2.predict(X_test_pca)
+
+print("\nLogistic Regression PCA-reduced Accuracy:", accuracy_score(y_test, log_preds_2))
+print("Logistic Regression PCA-reduced Classification Report:")
+print(classification_report(y_test, log_preds_2))
+
+# Task 3 Summary:
+# The best performing classifier was the Random Forest Model
+# because it achieved the highest accuracy of 94.6%.
+# PCA comparison: Non-PCA scaled models performed better; PCA did not help.
+# Spam metric: Accuracy isn't enough; prioritize reducing false positives, but
+# Random Forest had more false negatives than false positives.
+
+# Random Forest - Confusion Matrix
+cm = confusion_matrix(y_test, rf_preds)
+
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm,
+    display_labels=["Ham", "Spam"]
+)
+
+disp.plot()
+
+plt.title("Random Forest Confusion Matrix")
+
+plt.savefig("assignments_03/outputs/best_model_confusion_matrix.png")
+plt.show()
