@@ -22,6 +22,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.model_selection import train_test_split, cross_val_score
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -343,3 +344,63 @@ plt.title("Random Forest Confusion Matrix")
 
 plt.savefig("assignments_03/outputs/best_model_confusion_matrix.png")
 plt.show()
+
+# --- TASK 4 ---
+
+# === KNN unscaled cross-validation ===
+cv_scores_1 = cross_val_score(knn1, X_train, y_train, cv=5)
+
+print("\nKNN-unscaled CV scores:", cv_scores_1)
+print("KNN-unscaled Mean:", cv_scores_1.mean())
+print("KNN-unscaled Std:", cv_scores_1.std())
+
+# === KNN scaled cross-validation ===
+cv_scores_2 = cross_val_score(knn2, X_train_scaled, y_train, cv=5)
+
+print("\nKNN-scaled CV scores:", cv_scores_2)
+print("KNN-scaled Mean:", cv_scores_2.mean())
+print("KNN-scaled Std:", cv_scores_2.std())
+
+# === KNN PCA-reduced cross-validation ===
+cv_scores_3 = cross_val_score(knn3, X_train_pca, y_train, cv=5)
+
+print("\nKNN PCA-reduced CV scores:", cv_scores_3)
+print("KNN PCA-reduced Mean:", cv_scores_3.mean())
+print("KNN PCA-reduced Std:", cv_scores_3.std())
+
+# === Decision Tree cross-validation ===
+cv_scores_4 = cross_val_score(dtc_final, X_train, y_train, cv=5)
+
+print("\nDecision Tree CV scores:", cv_scores_4)
+print("Decision Tree Mean:", cv_scores_4.mean())
+print("Decision Tree Std:", cv_scores_4.std())
+
+# === Random Forest cross-validation ===
+cv_scores_5 = cross_val_score(rf, X_train, y_train, cv=5)
+
+print("\nRandom Forest CV scores:", cv_scores_5)
+print("Random Forest Mean:", cv_scores_5.mean())
+print("Random Forest Std:", cv_scores_5.std())
+
+# === Logistic Regression scaled cross-validation ===
+cv_scores_6 = cross_val_score(log_reg, X_train_scaled, y_train, cv=5)
+
+print("\nLogistic Regression-scaled CV scores:", cv_scores_6)
+print("Logistic Regression-scaled Mean:", cv_scores_6.mean())
+print("Logistic Regression-scaled Std:", cv_scores_6.std())
+
+# === Logistic Regression PCA-reduced cross-validation ===
+cv_scores_7 = cross_val_score(log_reg_2, X_train_pca, y_train, cv=5)
+
+print("\nLogistic Regression (PCA-reduced) CV scores:", cv_scores_7)
+print("Logistic Regression (PCA-reduced) Mean:", cv_scores_7.mean())
+print("Logistic Regression (PCA-reduced) Std:", cv_scores_7.std())
+
+# Task 4 summary:
+# Random Forest performed the best with the highest mean CV accuracy of 95.4%, which matches
+# the original train/test results.
+# PCA slightly improved KNN performance but reduced Logistic Regression performance.
+# Logistic Regression with PCA had the lowest variance, making it the most stable model, but
+# Random Forest provided the best overall accuracy.
+
+# --- TASK 5 ---
