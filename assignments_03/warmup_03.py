@@ -212,20 +212,22 @@ n_values = [2, 5, 15, 40]
 
 fig, axes = plt.subplots(5, 5, figsize=(10, 10))
 
-# original images
-for i in range(5):
-    axes[0, i].imshow(images[i], cmap="gray_r")
-    axes[0, i].set_title("Original")
-    axes[0, i].axis("off")
+# original digits (top row)
+for col in range(5):
+    axes[0, col].imshow(images[col], cmap="gray_r")
+    axes[0, col].axis("off")
+    if col == 0:
+        axes[0, col].set_ylabel("Original", fontsize=12)
     
 # reconstructions
-for row, n in enumerate(n_values):
-    for i in range(5):
-        reconstruction = reconstruct_digit(i, scores, pca, n)
+for row, n in enumerate(n_values, start=1):
+    for col in range(5):
+        reconstruction = reconstruct_digit(col, scores, pca, n)
         
-        axes[row + 1, i].imshow(reconstruction, cmap="gray_r")
-        axes[row +1, i].set_title(f"n={n}")
-        axes[row + 1, i].axis("off")
+        axes[row, col].imshow(reconstruction, cmap="gray_r")
+        axes[row, col].axis("off")
+        if col == 0:
+            axes[row, col].set_ylabel(f"n={n}", fontsize=12)
         
 plt.tight_layout()
 plt.savefig("assignments_03/outputs/pca_reconstructions.png")

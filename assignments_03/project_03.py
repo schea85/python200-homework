@@ -329,9 +329,12 @@ print(classification_report(y_test, log_preds_2))
 # Task 3 Summary:
 # The best performing classifier was the Random Forest Model
 # because it achieved the highest accuracy of 94.6%.
-# PCA comparison: Non-PCA scaled models performed better; PCA did not help.
-# Spam metric: Accuracy isn't enough; prioritize reducing false positives, but
-# Random Forest had more false negatives than false positives.
+# KNN: the scaled model performed slightly better than the PCA-reduced model,
+# so PCA did not improve KNN performance.
+# Logistic Regression: the scaled model outperformed the PCA-reduced model, showing that
+# PCA reduced performance for this classifier.
+# For a spam filter, accuracy alone is not enough.  I would prioritize reducing
+# false positives so legitimate emails are not incorrectly marked as spam.
 
 # Random Forest - Confusion Matrix
 cm = confusion_matrix(y_test, rf_preds)
@@ -399,12 +402,12 @@ print("\nLogistic Regression (PCA-reduced) CV scores:", cv_scores_7)
 print("Logistic Regression (PCA-reduced) Mean:", cv_scores_7.mean())
 print("Logistic Regression (PCA-reduced) Std:", cv_scores_7.std())
 
-# Task 4 summary:
-# Random Forest performed the best with the highest mean CV accuracy of 95.4%, which matches
-# the original train/test results.
-# PCA slightly improved KNN performance but reduced Logistic Regression performance.
-# Logistic Regression with PCA had the lowest variance, making it the most stable model, but
-# Random Forest provided the best overall accuracy.
+# Task 4 Summary:
+# Random Forest had the highest mean cross-validation accuracy, making it the
+# best-performing model overall. Logistic Regression with PCA had the lowest
+# standard deviation, making it the most stable model across the five folds.
+# These results were consistent with the earlier train/test split, where
+# Random Forest also achieved the highest accuracy.
 
 # --- TASK 5 ---
 knn5_pipeline = Pipeline([
@@ -437,8 +440,12 @@ predictions_2 = log_reg_pipeline.predict(X_test)
 print("Logistic Regression Classification Report:")
 print(classification_report(y_test, predictions_2))
 
-# Pipeline Summary:
-# The pipelines have different structures because Random Forest does not require
-# feature scaling, while Logistic Regression benefits from standard features.
-# Pipelines make preprocessing and modeling easier to reuse, reduce mistakes,
-# prevent data leakage, and simplify deployment.
+# Task 5 Summary:
+# I chose Random Forest because it was the best-performing tree-based classifier
+# in Task 3, and Logistic Regression because it was the best-performing
+# non-tree classifier.
+
+# PCA did not improve Logistic Regression, so the final pipeline includes a
+# StandardScaler but does not include PCA. The pipeline results matched the
+# earlier manual approach while making the preprocessing and prediction steps
+# easier to reuse and reducing the chance of data leakage.
