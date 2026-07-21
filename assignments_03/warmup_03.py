@@ -208,28 +208,30 @@ def reconstruct_digit(sample_idx, scores, pca, n_components):
         reconstruction = reconstruction + scores[sample_idx, i] * pca.components_[i]
     return reconstruction.reshape(8, 8)
 
-n_values = [2, 5, 15, 40]
+n = [2, 5, 15, 40]
 
 fig, axes = plt.subplots(5, 5, figsize=(10, 10))
 
 # original row
-for col in range(5):
-    ax = axes[0, col]
-    ax.imshow(images[col], cmap="gray_r")
-    ax.set_title("Original")
+for i in range(5):
+    ax = axes[0, i]
+    ax.imshow(images[i], cmap="gray_r")
     ax.axis("off")
-    
+    ax.set_title(f"Digit {i}")
+
+axes[0, 0].set_ylabel("Original", fontsize=12)
+
 # reconstructions
-for row, n in enumerate(n_values, start=1):
+for row, n in enumerate(n, start=1):
     for col in range(5):
-        for col in range(5):
-            ax = axes[row, col]
+        ax = axes[row, col]
             
-            reconstruction = reconstruct_digit(col, scores, pca, n)
+        reconstruction = reconstruct_digit(col, scores, pca, n)
             
-            ax.imshow(reconstruction, cmap="gray_r")
-            ax.set_title(f"n={n}")
-            ax.axis("off")
+        ax.imshow(reconstruction, cmap="gray_r")
+        ax.axis("off")
+        
+        axes[row, 0].set_ylabel(f"n={n}", fontsize=12)
         
 plt.tight_layout()
 plt.savefig("assignments_03/outputs/pca_reconstructions.png")
