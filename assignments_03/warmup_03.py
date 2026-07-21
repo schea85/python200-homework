@@ -14,6 +14,7 @@ from sklearn.metrics import (
     confusion_matrix,
     ConfusionMatrixDisplay
 )
+from sklearn.multiclass import OneVsRestClassifier
 
 iris = load_iris(as_frame=True)
 X = iris.data
@@ -126,15 +127,15 @@ print(classification_report(y_test, tree_preds))
 # --- Logistic Regression and Regularization ---
 
 # Logistic Regression Q1:
-log_reg_full_1 = LogisticRegression(C=0.01, max_iter=1000)
+log_reg_full_1 = LogisticRegression(C=0.01, max_iter=1000, solver="lbfgs")
 log_reg_full_1.fit(X_train_scaled, y_train)
 print("\nC=0.01, coefficients=", np.abs(log_reg_full_1.coef_).sum())
 
-log_reg_full_2 = LogisticRegression(C=1.0, max_iter=1000)
+log_reg_full_2 = LogisticRegression(C=1.0, max_iter=1000, solver="lbfgs")
 log_reg_full_2.fit(X_train_scaled, y_train)
 print("C=1.0, coefficients=", np.abs(log_reg_full_2.coef_).sum())
 
-log_reg_full_3 = LogisticRegression(C=100, max_iter=1000)
+log_reg_full_3 = LogisticRegression(C=100, max_iter=1000, solver="lbfgs")
 log_reg_full_3.fit(X_train_scaled, y_train)
 print("C=100, coefficients=", np.abs(log_reg_full_3.coef_).sum())
 
@@ -217,7 +218,7 @@ for digit_index in range(5):
     axes[0, digit_index].imshow(images[digit_index], cmap="gray_r")
     axes[0, digit_index].axis("off")
     
-axes[0, 0].set_title("Original", fontsize=12)
+    axes[0, 0].set_title("Original", fontsize=12)
 
 # Reconstruction rows
 for row_index, n_components in enumerate(n_values, start=1):
