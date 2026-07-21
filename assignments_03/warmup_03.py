@@ -216,6 +216,8 @@ fig, axes = plt.subplots(len(n_values) + 1, 5, figsize=(10, 10))
 for digit_index in range(5):
     axes[0, digit_index].imshow(images[digit_index], cmap="gray_r")
     axes[0, digit_index].axis("off")
+    
+axes[0, 0].set_title("Original", fontsize=12)
 
 # Reconstruction rows
 for row_index, n_components in enumerate(n_values, start=1):
@@ -227,6 +229,11 @@ for row_index, n_components in enumerate(n_values, start=1):
             reconstruction, cmap="gray_r"
         )
         axes[row_index, digit_index].axis("off")
+        
+    axes[row_index, 0].set_title(
+        f"n={n_components}",
+        fontsize=12
+    )
             
 plt.tight_layout()
 plt.savefig("assignments_03/outputs/pca_reconstructions.png")
