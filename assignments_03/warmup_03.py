@@ -208,31 +208,26 @@ def reconstruct_digit(sample_idx, scores, pca, n_components):
         reconstruction = reconstruction + scores[sample_idx, i] * pca.components_[i]
     return reconstruction.reshape(8, 8)
 
-n = [2, 5, 15, 40]
+n_values = [2, 5, 15, 40]
 
-fig, axes = plt.subplots(5, 5, figsize=(10, 10))
+fig, axes = plt.subplots(len(n_values) + 1, 5, figsize=(10, 10))
 
-# original row
-for i in range(5):
-    ax = axes[0, i]
-    ax.imshow(images[i], cmap="gray_r")
-    ax.axis("off")
-    ax.set_title(f"Digit {i}")
+# Original row
+for digit_index in range(5):
+    axes[0, digit_index].imshow(images[digit_index], cmap="gray_r")
+    axes[0, digit_index].axis("off")
 
-axes[0, 0].set_ylabel("Original", fontsize=12)
-
-# reconstructions
-for row, n in enumerate(n, start=1):
-    for col in range(5):
-        ax = axes[row, col]
+# Reconstruction rows
+for row_index, n_components in enumerate(n_values, start=1):
+    for digit_index in range(5):
+        reconstruction = reconstruct_digit(
+            digit_index, scores, pca, n_components
+        )
+        axes[row_index, digit_index].imshow(
+            reconstruction, cmap="gray_r"
+        )
+        axes[row_index, digit_index].axis("off")
             
-        reconstruction = reconstruct_digit(col, scores, pca, n)
-            
-        ax.imshow(reconstruction, cmap="gray_r")
-        ax.axis("off")
-        
-        axes[row, 0].set_ylabel(f"n={n}", fontsize=12)
-        
 plt.tight_layout()
 plt.savefig("assignments_03/outputs/pca_reconstructions.png")
 plt.show()
