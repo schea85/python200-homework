@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
@@ -207,18 +208,44 @@ print(f"Test AUC: {test_auc2:.3f}")
 # Comment:
 # The Decision Tree had a higher AUC than Logistic Regression, so I would bring the 
 # Decision Tree forward for further development.  However, AUC is not the only
-# factor to consider; model interpretability, complexity, speed, and the cost of false
+# factor to consider; complexity, speed, and the cost of false
 # positives and false negatives are also important.
 
 
 
 # GridSearch Q3:
+results1 = pd.DataFrame(grid_search.cv_results_)
 
+print("\nMean and STD of CV AUC for each parameter value from best to worst:")
+print(
+    results1[["param_clf__C", "mean_test_score", "std_test_score"]]
+    .sort_values("mean_test_score", ascending=False)
+    .to_string(index=False)
+)
+
+# Comment:
+# C=100.0 and C=10.0 have nearly identical mean AUCs.
+# I would choose C=100.0 because it has a slightly lower STD.
+# (lower STD = more consistent, more reliable)
 
 
 
 # --- joblib ---
+print("\n")
 
 # joblib Q1:
+best_lr_pipe = best_model
+
+joblib.dump(best_lr_pipe, "assignments_04/models/warmup_model.pkl")
+
+loaded_clf = joblib.load("assignments_04/models/warmup_model.pkl")
+
+original_preds = best_lr_pipe.predict(X_test)
+loaded_preds   = loaded_clf.predict(X_test)
+
+assert (original_preds == loaded_preds).all(), "Predictions do not match!"
+print("Predictions match. Model saved and loaded successfully.")
+
+
 
 # joblib Q2:
