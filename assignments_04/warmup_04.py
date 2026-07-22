@@ -246,6 +246,31 @@ loaded_preds   = loaded_clf.predict(X_test)
 assert (original_preds == loaded_preds).all(), "Predictions do not match!"
 print("Predictions match. Model saved and loaded successfully.")
 
+# Comment:
+# Saving only the Logistic Regression model would lose the scaler.
+# The model would receive unscaled data during prediction, causing
+# incorrect results.
+
 
 
 # joblib Q2:
+
+# --- Simulated prediction script ---
+loaded_model = joblib.load("assignments_04/models/warmup_model.pkl")
+
+# Three hand-crafted test cases — raw, unscaled data
+new_samples = np.array([
+    [2.5,  1.2, -0.3,  0.8,  1.0, -0.5,  0.2,  0.9, -1.1,  0.4],
+    [-1.0, 0.5,  0.9, -0.7, -0.2,  1.3, -0.8,  0.1,  0.5, -0.3],
+    [0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0],
+])
+
+predictions = loaded_model.predict(new_samples)
+probabilities = loaded_model.predict_proba(new_samples)[:, 1]
+
+for i, (pred, prob) in enumerate(zip(predictions, probabilities)):
+    print(f"Row {i+1}: Class={pred}, Probability={prob:.2f}")
+    
+# Comment:
+# The all-zeros row prediction depends on the model's learned intercept because
+# the features are near the average after scaling.
