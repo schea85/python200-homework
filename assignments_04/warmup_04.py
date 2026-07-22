@@ -13,6 +13,7 @@ from sklearn.metrics import (
     roc_auc_score,
     RocCurveDisplay,
     classification_report,
+    f1_score
 )
 import joblib
 
@@ -33,6 +34,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 # --- ROC and AUC ---
+
 # ROC Q1:
 
 # logistic regression
@@ -61,6 +63,8 @@ print(f"KNN AUC: {knn_auc:.3f}")
 # KNN has a higher AUC (0.939), so it separates the two classes better than 
 # Logistic Regression, independent of the classification threshold.
 
+
+
 # ROC Q2:
 
 fpr1, tpr1, thresholds1 = roc_curve(y_test, log_reg_probs)
@@ -84,7 +88,7 @@ target_tpr = .80
 
 idx = np.argmin(np.abs(tpr1 - target_tpr))
 
-print("Logistic Regression:")
+print("\nLogistic Regression:")
 print(f"TPR: {tpr1[idx]:.3f}")
 print(f"FPR: {fpr1[idx]:.3f}")
 
@@ -100,4 +104,121 @@ print(f"FPR: {fpr2[idx2]:.3f}")
 # This means that if we need to catch about 80% of positive cases,
 # KNN would produce fewer false alarms than Logistic Regression.
 
+
+
 # ROC Q3:
+f1_scores = []
+
+for threshold in thresholds1:
+    y_pred = (log_reg_probs >= threshold).astype(int)
+    f1 = f1_score(y_test, y_pred)
+    f1_scores.append(f1)
+    
+best_idx = np.argmax(f1_scores)
+
+best_threshold = thresholds1[best_idx]
+best_f1 = f1_scores[best_idx]
+best_tpr = tpr1[best_idx]
+best_fpr = fpr1[best_idx]
+
+print(f"\nBest threshold: {best_threshold:.3f}")
+print(f"TPR: {best_tpr:.3f}")
+print(f"FPR: {best_fpr:.3f}")
+print(f"F1 Score: {best_f1:.3f}")
+
+# Comment
+# The optimal threshold (0.276) is lower than the default 0.5.
+# A lower threshold helps catch more positives but increases false positives.
+# This is useful when missing positives is more costly than false alarms.
+
+
+
+# --- GridSearchCV ---
+
+# GridSearch Q1:
+
+pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("clf", LogisticRegression(max_iter=1000)),
+])
+
+param_grid = {
+    "clf__C": [0.001, 0.01, 0.1, 1.0, 10.0, 100.0]
+}
+
+grid_search = GridSearchCV(
+    estimator=pipe,
+    param_grid=param_grid,
+    cv=5,
+    scoring="roc_auc"
+)
+
+grid_search.fit(X_train, y_train)
+
+print(f"\nBest C: {grid_search.best_params_['clf__C']}")
+print(f"Best CV AUC: {grid_search.best_score_:.3f}")
+
+best_model = grid_search.best_estimator_
+
+y_probs_best = best_model.predict_proba(X_test)[:, 1]
+
+test_auc = roc_auc_score(y_test, y_probs_best)
+
+print(f"Test AUC: {test_auc:.3f}")
+
+# Comment:
+# No, the grid search did not pick the default C=1.0 as I would have guessed.
+# Instead, it selected C=100.0.
+# The test AUC was 0.706, showing no improvement from tuning C compared to the
+# default setting.
+
+
+
+# GridSearch Q2:
+pipe2 = Pipeline([
+    ("scaler", StandardScaler()),
+    ("clf", DecisionTreeClassifier(random_state=42)),
+])
+
+tree_param_grid = {
+    "clf__max_depth": [2, 3, 5, 8, None]
+}
+
+tree_grid_search = GridSearchCV(
+    estimator=pipe2,
+    param_grid=tree_param_grid,
+    cv=5,
+    scoring="roc_auc"
+)
+
+tree_grid_search.fit(X_train, y_train)
+
+print(f"\nBest max_depth: {tree_grid_search.best_params_['clf__max_depth']}")
+print(f"Best CV AUC: {tree_grid_search.best_score_:.3f}")
+
+best_model2 = tree_grid_search.best_estimator_
+
+y_probs_best2 = best_model2.predict_proba(X_test)[:, 1]
+
+test_auc2 = roc_auc_score(y_test, y_probs_best2)
+
+print(f"Test AUC: {test_auc2:.3f}")
+
+# Comment:
+# The Decision Tree had a higher AUC than Logistic Regression, so I would bring the 
+# Decision Tree forward for further development.  However, AUC is not the only
+# factor to consider; model interpretability, complexity, speed, and the cost of false
+# positives and false negatives are also important.
+
+
+
+# GridSearch Q3:
+
+
+
+
+# --- joblib ---
+
+# joblib Q1:
+
+# joblib Q2:
