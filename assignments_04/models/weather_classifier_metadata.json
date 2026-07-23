@@ -7,10 +7,16 @@
     "precipitation_sum",
     "wind_speed_10m_max"
   ],
-  "label": "good_for_running",
+  "label_threshold": {
+    "temperature_2m_max": "7-26\u00b0C",
+    "temperature_2m_min": ">= 4\u00b0C",
+    "precipitation_sum": "< 3.0 mm",
+    "wind_speed_10m_max": "< 25 km/h"
+  },
   "best_params": {
     "clf__C": 10.0
   },
   "test_auc": 0.7966,
-  "trained_on": "2020 Open-Mateo, Washington DC (lat 38.90, lon -77.04)"
+  "trained_on": "2020 Open-Mateo",
+  "city": "Washington, DC (lat 38.90, lon -77.04)"
 }

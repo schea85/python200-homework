@@ -13,7 +13,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import roc_auc_score, classification_report, roc_curve, RocCurveDisplay
 
-
 # Fetch Data
 url = "https://archive-api.open-meteo.com/v1/archive"
 params = {
@@ -133,10 +132,16 @@ metadata = {
     "python_version": sys.version,
     "sklearn_version": sklearn.__version__,
     "features": FEATURES,
-    "label": "good_for_running",
+    "label_threshold": {
+        "temperature_2m_max": "7-26°C",
+        "temperature_2m_min": ">= 4°C",
+        "precipitation_sum": "< 3.0 mm",
+        "wind_speed_10m_max": "< 25 km/h"
+    },
     "best_params": grid_search.best_params_,
     "test_auc": round(test_auc, 4),
-    "trained_on": "2020 Open-Mateo, Washington DC (lat 38.90, lon -77.04)"
+    "trained_on": "2020 Open-Mateo",
+    "city": "Washington, DC (lat 38.90, lon -77.04)"
 }
 
 with open("assignments_04/models/weather_classifier_metadata.json", "w") as f:
