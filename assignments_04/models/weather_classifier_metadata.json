@@ -1,0 +1,16 @@
+{
+  "python_version": "3.12.13 (main, Jun 23 2026, 15:44:24) [Clang 22.1.3 ]",
+  "sklearn_version": "1.9.0",
+  "features": [
+    "temperature_2m_max",
+    "temperature_2m_min",
+    "precipitation_sum",
+    "wind_speed_10m_max"
+  ],
+  "label": "good_for_running",
+  "best_params": {
+    "clf__C": 10.0
+  },
+  "test_auc": 0.7966,
+  "trained_on": "2020 Open-Mateo, Washington DC (lat 38.90, lon -77.04)"
+}
