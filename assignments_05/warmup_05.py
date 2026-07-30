@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 from openai import OpenAI
 from pprint import pprint
+import os
+import json
 
 if load_dotenv():
     print("Successfully loaded api key")
@@ -137,9 +139,95 @@ print(response.choices[0].message.content)
 
 # --- Prompt Engineering ---
 # Prompt Q1:
+def get_completion(prompt: str, model="gpt-4o-mini", temperature=0):
+    """
+    Send a prompt to the model and return the assistant's text reply.
+    This helper keeps our examples clean and focused on the prompt itself.
+    """
+    response = client.chat.completions.create(
+        model=model,
+        messages=[{"role": "user", "content": prompt}],
+        temperature=temperature
+    )
+    return response.choices[0].message.content
+
+print("\nPrompt Q1 - Zero-Shot:")
+
+reviews = [
+    "The onboarding process was smooth and the team was welcoming.",
+    "The software crashes constantly and support never responds.",
+    "Great price, but the documentation is nearly impossible to follow."
+]
+
+for i, review in enumerate(reviews):
+    prompt = f"What is the sentiment of each review? Classify as positive, negative, or mixed: {review}"
+    response = get_completion(prompt, temperature=0)
+    print(f"\nReview {i+1}: {response}")
+
 # Prompt Q2:
-# Prompt Q3:
+print("\nPrompt Q2 - One-Shot:")
+
+for i, review in enumerate(reviews):
+    prompt = f"""
+    'Classify as positive, negative, or mixed: {review}. What is the sentiment of each review?'
+    Example: 
+    Review: 'Fast shipping but the item arrived damaged.'
+    Sentiment: mixed
+    """
+
+    response = get_completion(prompt, temperature=0)
+    print(f"\n{response}")
+
+# Comment:
+# The one-shot example improved consistency by showing the model the expected output format.
+# The predictions stayed the same.  And the model was clearer about answering the mixed review.
+# The model learns the pattern and produces better results.  Called in-context learning.
+
+# Prompt Q3 - Few Shot:
+print("\nPrompt Q3 - Few-Shot:")
+for i, review in enumerate(reviews):
+    prompt = f"""
+    'Classify as positive, negative, or mixed: {review}. What is the sentiment of each review?'
+    Examples: 
+    Review: 'The customer service was excellent and my issue was resolved quickly.'
+    Sentiment: positive
+    
+    Review: 'The app is slow, crashes often, and the support team never replied.'
+    Sentiment: negative
+    
+    Review: 'Fast shipping but the item arrived damaged.'
+    Sentiment: mixed
+    """
+
+    response = get_completion(prompt, temperature=0)
+    print(f"\n{response}")
+
+# Comment:
+# The more examples you give the model, the better it gets at pattern recognition and consistency.
+# Use one-shot or few-shot when the task is complex or you need a specific output format.
+# Zero-shot is fastest but less reliable for complex tasks.
+
 # Prompt Q4:
+prompt = """
+Show your step-by-step reasoning, then give the final answer on its own line labelled: Final answer: $<value>
+
+Problem: A data engineer earns $85,000 per year. She gets a 12% raise, then 6 months later
+takes a new job that pays $7,500 more per year than her post-raise salary.
+What is her final annual salary?
+"""
+
+response = get_completion(prompt, temperature=0)
+print("\n Prompt Q4:")
+print(response)
+
+# Comment:
+# By asking the model to show its work; you dramatically increase accuracy on structured or 
+# multi-step tasks. This allows you to check the steps for errors. 
+# Labeling a final answer makes it easy to parse in code.
+# Shows the model's logic, building trust in the result.
+# Encourages the model to break a complex problem into smaller steps and reduces the chance
+# of making calculation errors.
+
 # Prompt Q5:
 # Prompt Q6:
 # --- Local Models with Ollama ---
