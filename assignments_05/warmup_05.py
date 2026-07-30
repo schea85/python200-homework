@@ -8,7 +8,6 @@ if load_dotenv():
     print("Successfully loaded api key")
 
 # --- The Chat Completions API ---
-
 # API Q1:
 load_dotenv()
 client = OpenAI()
@@ -229,7 +228,82 @@ print(response)
 # of making calculation errors.
 
 # Prompt Q5:
+print("\nPrompt Q5:")
+
+prompt = """
+Classify the sentiment of the review and respond ONLY with valid JSON.
+Keys: sentiment (positive/negative/mixed), confidence(a float from 0 to 1), reason (one sentence).
+
+review = "I've been using this tool for three months. It handles large datasets well, \
+but the UI is clunky and the export options are limited."
+"""
+
+response = get_completion(prompt, temperature=0)
+print("Raw responose:", response)
+
+# parse JSON safely
+try:
+    result = json.loads(response)
+    print("Parsed sentiment:", result["sentiment"])
+    print("Confidence:", result["confidence"])
+    print("Reason:", result["reason"])
+except json.JSONDecodeError:
+    print("Invalid JSON response", response)
+
 # Prompt Q6:
+print("\nPrompt Q6:")
+
+user_text = "First boil a pot of water. Once boiling, add a handful of salt and the \
+pasta. Cook for 8-10 minutes until al dente. Drain and toss with your sauce of choice."
+
+prompt = f"""
+You will be given text inside triple backticks.
+If it contains step-by-step instructions, rewrite them as a numbered list.
+If it does not contain instructions, respond with exactly: "No steps provided."
+
+```{user_text}```
+"""
+
+response = get_completion(prompt, temperature=0)
+print(response)
+
+print("\nPrompt Q6 - Second Prompt:")
+user_text2 = "I love learning Python."
+
+prompt = f"""
+You will be given text inside triple backticks.
+If it contains step-by-step instructions, rewrite them as a numbered list.
+If it does not contain instructions, respond with exactly: "No steps provided."
+
+```{user_text2}```
+"""
+
+response = get_completion(prompt, temperature=0)
+print(response)
+
+# Comment:
+# Delimiters are simple markers that clearly separates the sections so that the model does not get
+# confused.  They keep the prompt organized and make it easier for the model to distinguish
+# between instructions and user-provided text.
+
 # --- Local Models with Ollama ---
 # Ollama Q1:
+print("\nOllama Q1:")
 
+"""
+Local Ollama output:
+A large model is a complex system trained on vast datasets to recognize patterns and make accurate predictions. It 
+processes information in parallel, enabling rapid decision-making and understanding of vast amounts of data.
+"""
+
+prompt = "Explain what a large language model is in two sentences."
+
+response = get_completion(prompt, temperature=0)
+print(response)
+
+# Comment:
+# The OpenAI and Ollama responses were similar because they explained the concept of 
+# LLMs, but the wording and level of detail differed.
+# One advantage of running a model locally is privacy because the data does not leave your computer.
+# One disadvantage is that local model may be less powerful and require more
+# hard resources depending on which model you install.
