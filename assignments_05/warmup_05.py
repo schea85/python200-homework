@@ -79,9 +79,62 @@ print(response4.choices[0].message.content)
 
 # --- System Messages and Personas ---
 # System Q1:
+messages = [
+    {"role": "system",
+     "content": "You are a patient, encouraging Python tutor.  You always explain things simply and end with a word of encouragement."},
+    {"role": "user",
+     "content": "I don't understand what a list comprehension is."}
+]
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages
+)
 
+print("\nSystem Q1:")
+print(response.choices[0].message.content)
+
+messages2 = [
+    {"role": "system",
+     "content": "You are a gen Z friend who explains programming using modern slang and casual language."},
+    {"role": "user",
+     "content": "I don't understand what a list comprehension is."}
+]
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages2
+)
+
+print("\nSystem Q1 - New Persona :")
+print(response.choices[0].message.content)
+
+# Comment:
+# Changing the system message changed the model's personality and tone.
+# Both responses explained list comprehensions, but the wording, style
+# and attitude matched the personality described in system message.
 
 # System Q2:
+messages = [
+    {"role": "system",
+     "content": "You are a helpful assistant."},
+    {"role": "user",
+     "content": "My name is Jordan and I'm learning Python."},
+    {"role": "assistant",
+     "content": "Nice to meet you, Jordan!  Python is a great choice.  What would you like to work on?"},
+    {"role": "user",
+     "content": "Can you remind me what my name is?"}
+]
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=messages
+)
+
+print("\n System Q2:")
+print(response.choices[0].message.content)
+
+# Comment:
+# The model knows Jordan's name because the previous messages were included in the API request.
+# The API does not remember past calls; the conversation history is manually provided each time.
+
 # --- Prompt Engineering ---
 # Prompt Q1:
 # Prompt Q2:
