@@ -55,7 +55,7 @@ def rewrite_bullets(bullets: list[str]) -> list[dict]:
     Rewrite each resume bullet point below to be more specific, results-oriented, and compelling.
     Use strong action verbs. Do not invent facts that aren't implied by the original.
 
-    IMPORTANT: Return ONLY a valid JSON, no other text.
+    IMPORTANT: Return ONLY a valid JSON array of objects, no other text.
     Each item should have two keys:
     "original" (the original bullet) and "improved" (your rewritten version).
     
@@ -69,7 +69,6 @@ def rewrite_bullets(bullets: list[str]) -> list[dict]:
     
     # Your code here: call get_completion(), parse the JSON, and return the result
     response = get_completion(messages)
-    print(response)
         
     # parse JSON safely
     try:
@@ -233,7 +232,9 @@ def run_chatbot():
                     raw_bullets.append(line)
             # YOUR CODE: call rewrite_bullets() and print the results
             revisions = rewrite_bullets(raw_bullets)
-            print(revisions)
+            for item in revisions:
+                print("Original:", item["original"])
+                print("Improved:", item["improved"])
 
         # 6. Check if the user wants a cover letter
         elif "cover letter" in user_input.lower():
@@ -259,3 +260,21 @@ def run_chatbot():
 
 if __name__ == "__main__":
     run_chatbot()
+    
+# --- Task 6 - Ethics Reflection ---
+# Option A
+
+# Question 1:
+# AI models are trained on existing text, which may contain biases (intentional/unintentional) from the 
+# people and the sources that created the data.  This could certainly cause the AI model to favor
+# certain communication styles, industries, or cultural expectations that are more common in its 
+# training dataset.  For instance, Amazon used an AI tool to automatically filter job applications which 
+# were targeting mostly men (showing biases).  Users should review suggestions from AI model and make sure
+# it reflects their own experiences and goals.
+
+# Question 2:
+# If a job seeker submitted the bot's output directly without reviewing it, the content
+# could include inaccurate information, skills exaggeration, or fail to represent the job seeker's
+# experience.  Also, the response may also sound generic and not match the company's needs or the
+# applicant's personal voice.  One should always review and edit the output to help ensure the final
+# application is accurate, authentic, and professional.
