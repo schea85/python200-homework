@@ -56,8 +56,8 @@ response3 = client.chat.completions.create(
 
 print("\nAPI Q3:")
 
-for i, response3.choice in enumerate(response3.choices):
-    print(f"\nFun Fact #{i+1}",response3.choice.message.content)
+for i, choice in enumerate(response3.choices):
+    print(f"\nFun Fact #{i+1}", choice.message.content)
 
 # API Q4:
 response4 = client.chat.completions.create(
@@ -74,7 +74,7 @@ print("\nAPI Q4:")
 print(response4.choices[0].message.content)
 
 # Comment:
-# Max_tokens was set to 15, meaning only 15 words max.  Therefore, it seem to cut off after 15 words.
+# Max_tokens was set to 15 and therefore, it seem to cut off after 15 tokens.
 # It didn't finish what it had to say.  
 # In real application, max_tokens helps control response length, reduce API costs, etc.
 
