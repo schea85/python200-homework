@@ -240,7 +240,7 @@ Keys: sentiment (positive/negative/mixed), confidence(a float from 0 to 1), reas
 review = "I've been using this tool for three months. It handles large datasets well, \
 but the UI is clunky and the export options are limited."
 
-Return ONLY valid JSON in this format:
+Return ONLY valid JSON with keys (sentiment, confidence, reason) in this format:
 {{
     "sentiment": "...",
     "confidence": "...",
@@ -258,7 +258,7 @@ try:
     print("Confidence:", result["confidence"])
     print("Reason:", result["reason"])
 except json.JSONDecodeError as e:
-    print("Error: response was not valid JSON. {e}")
+    print(f"Error parsing JSON: {e}")
     print("Raw response:", response)
 
 # Prompt Q6:
@@ -302,9 +302,6 @@ print(response)
 print("\nOllama Q1:")
 
 """
-ollama run qwen3:0.6b 
-Explain what a large language model is in two sentences.
-
 Local Ollama output:
 A large model is a complex system trained on vast datasets to recognize patterns and make accurate predictions. It 
 processes information in parallel, enabling rapid decision-making and understanding of vast amounts of data.
