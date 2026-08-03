@@ -158,24 +158,26 @@ reviews = [
     "Great price, but the documentation is nearly impossible to follow."
 ]
 
-for i, review in enumerate(reviews):
-    prompt = f"What is the sentiment of each review? Classify as positive, negative, or mixed: {review}"
-    response = get_completion(prompt, temperature=0)
-    print(f"\nReview {i+1}: {response}")
+zero_shot_prompt = f"""
+What is the sentiment of each review? Classify as positive, negative, or mixed: {reviews}.
+Return result labeled and with the review number.
+"""
+response = get_completion(zero_shot_prompt, temperature=0)
+print(f"\n{response}")
 
 # Prompt Q2:
 print("\nPrompt Q2 - One-Shot:")
 
-for i, review in enumerate(reviews):
-    prompt = f"""
-    'Classify as positive, negative, or mixed: {review}. What is the sentiment of each review?'
-    Example: 
-    Review: 'Fast shipping but the item arrived damaged.'
-    Sentiment: mixed
-    """
+one_shot_prompt = f"""
+What is the sentiment of each review? Classify as positive, negative, or mixed: {reviews}.
 
-    response = get_completion(prompt, temperature=0)
-    print(f"\n{response}")
+Example:
+Review: "Fast shipping but the item arrived damaged."
+Sentiment: mixed
+"""
+
+response = get_completion(one_shot_prompt, temperature=0)
+print(response)
 
 # Comment:
 # The one-shot example improved consistency by showing the model the expected output format.
@@ -184,22 +186,23 @@ for i, review in enumerate(reviews):
 
 # Prompt Q3 - Few Shot:
 print("\nPrompt Q3 - Few-Shot:")
-for i, review in enumerate(reviews):
-    prompt = f"""
-    'Classify as positive, negative, or mixed: {review}. What is the sentiment of each review?'
-    Examples: 
-    Review: 'The customer service was excellent and my issue was resolved quickly.'
-    Sentiment: positive
-    
-    Review: 'The app is slow, crashes often, and the support team never replied.'
-    Sentiment: negative
-    
-    Review: 'Fast shipping but the item arrived damaged.'
-    Sentiment: mixed
-    """
 
-    response = get_completion(prompt, temperature=0)
-    print(f"\n{response}")
+few_shot_prompt = f"""
+What is the sentiment of each review? Classify as positive, negative, or mixed: {reviews}.
+
+Examples: 
+Review: "The customer service was excellent and my issue was resolved quickly."
+Sentiment: positive
+    
+Review: "The app is slow, crashes often, and the support team never replied."
+Sentiment: negative
+    
+Review: "Fast shipping but the item arrived damaged."
+Sentiment: mixed
+"""
+
+response = get_completion(few_shot_prompt, temperature=0)
+print(response)
 
 # Comment:
 # The more examples you give the model, the better it gets at pattern recognition and consistency.
@@ -231,7 +234,7 @@ print(response)
 print("\nPrompt Q5:")
 
 prompt = """
-Classify the sentiment of the review and respond ONLY with valid JSON.
+Classify the sentiment of the review and return ONLY with valid JSON.
 Keys: sentiment (positive/negative/mixed), confidence(a float from 0 to 1), reason (one sentence).
 
 review = "I've been using this tool for three months. It handles large datasets well, \
@@ -239,7 +242,7 @@ but the UI is clunky and the export options are limited."
 """
 
 response = get_completion(prompt, temperature=0)
-print("Raw responose:", response)
+print("Raw response:", response)
 
 # parse JSON safely
 try:
@@ -247,8 +250,9 @@ try:
     print("Parsed sentiment:", result["sentiment"])
     print("Confidence:", result["confidence"])
     print("Reason:", result["reason"])
-except json.JSONDecodeError:
-    print("Invalid JSON response", response)
+except json.JSONDecodeError as e:
+    print("Error: response was not valid JSON. {e}")
+    print("Raw response:", response)
 
 # Prompt Q6:
 print("\nPrompt Q6:")
@@ -291,6 +295,9 @@ print(response)
 print("\nOllama Q1:")
 
 """
+ollama run qwen3:0.6b 
+Explain what a large language model is in two sentences.
+
 Local Ollama output:
 A large model is a complex system trained on vast datasets to recognize patterns and make accurate predictions. It 
 processes information in parallel, enabling rapid decision-making and understanding of vast amounts of data.
