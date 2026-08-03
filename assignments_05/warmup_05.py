@@ -234,11 +234,18 @@ print(response)
 print("\nPrompt Q5:")
 
 prompt = """
-Classify the sentiment of the review and return ONLY with valid JSON.
+Classify the sentiment of the review.
 Keys: sentiment (positive/negative/mixed), confidence(a float from 0 to 1), reason (one sentence).
 
 review = "I've been using this tool for three months. It handles large datasets well, \
 but the UI is clunky and the export options are limited."
+
+Return ONLY valid JSON in this format:
+{{
+    "sentiment": "...",
+    "confidence": "...",
+    "reason": "..."
+}}
 """
 
 response = get_completion(prompt, temperature=0)
