@@ -40,8 +40,9 @@ response = get_completion(messages)
 print(response)
 
 # Comment:
-# I chose to include instructions for the AI coach to ask clarifying questions because
-# job application advice depends on the candidate's background, target role, and industry.
+# I included a required constraint of my own that the AI coach ask clarifying questions when details are missing.
+# Because often times, the job application advice depends on the candidate's background, target role, and industry.
+# Thus, keeping the AI coach focused on job application materials and to remind the user to review output.
 # This helps the model make its responses more relevant and personalized.
 
 # --- Task 2 - Bullet Point Rewriter: ---
@@ -75,15 +76,14 @@ def rewrite_bullets(bullets: list[str]) -> list[dict]:
         result = json.loads(response.replace("```json", "").replace("```", "").strip())
             
         for item in result:
-            print("Original:", item["original"])
-            print("Improved:", item["improved"])
+            print("Original:", item["original"], "Improved:", item["improved"])
             print("\n")
             
         return result
         
     except json.JSONDecodeError:
         print("Error: response was not a valid JSON")
-        return []
+        print("Raw response:", response)
 
 bullets = [
     "Helped customers with their problems",
@@ -149,7 +149,7 @@ print(cover_letter)
 
 # Comment:
 # I chose these examples because they show career changers successfully connecting their
-# previous experience to a new technical role.  They are specific and avoid generic phrases.
+# previous experience to a new technical role.  They control tone, are specific and avoid generic phrases.
 # Few-shot prompting helps produce a more specific, consistent, and less generic response.
 
 # --- Task 4 -  Moderation Check ---

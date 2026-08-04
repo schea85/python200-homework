@@ -243,7 +243,7 @@ but the UI is clunky and the export options are limited."
 Return ONLY valid JSON with keys (sentiment, confidence, reason) in this format:
 {{
     "sentiment": "...",
-    "confidence": "...",
+    "confidence": float,
     "reason": "..."
 }}
 """
@@ -258,7 +258,7 @@ try:
     print("Confidence:", result["confidence"])
     print("Reason:", result["reason"])
 except json.JSONDecodeError as e:
-    print(f"Error parsing JSON: {e}")
+    print(f"Error: {e}")
     print("Raw response:", response)
 
 # Prompt Q6:
@@ -293,13 +293,19 @@ response = get_completion(prompt, temperature=0)
 print(response)
 
 # Comment:
-# Delimiters are simple markers that clearly separates the sections so that the model does not get
-# confused.  They keep the prompt organized and make it easier for the model to distinguish
+# Delimiters are simple markers that clearly separates the sections.  
+# They help prevent confusion for the model.
+# They keep the prompt organized and make it easier for the model to distinguish
 # between instructions and user-provided text.
 
 # --- Local Models with Ollama ---
 # Ollama Q1:
 print("\nOllama Q1:")
+
+prompt = "Explain what a large language model is in two sentences."
+
+response = get_completion(prompt, temperature=0)
+print(response)
 
 """
 Local Ollama output:
@@ -307,14 +313,9 @@ A large model is a complex system trained on vast datasets to recognize patterns
 processes information in parallel, enabling rapid decision-making and understanding of vast amounts of data.
 """
 
-prompt = "Explain what a large language model is in two sentences."
-
-response = get_completion(prompt, temperature=0)
-print(response)
-
 # Comment:
-# The OpenAI and Ollama responses were similar because they explained the concept of 
-# LLMs, but the wording and level of detail differed.
+# The OpenAI and Ollama responses were similar/usefulness because they explained the concept of 
+# LLMs.  The main difference that I noticed were the wording and level of detail between the two.
 # One advantage of running a model locally is privacy because the data does not leave your computer.
 # One disadvantage is that local model may be less powerful and require more
 # hard resources depending on which model you install.
