@@ -228,9 +228,12 @@ for q in questions:
         print("-" * 30)
 
 # Comment:
-
-
+#
+# a.) Query 1: "What employee benefits does BrightLeaf offer"
+# Of the three chunks, the first one is the relevant and accurate answer.
+# Yes, the AI's response did sound confident and specific.
 
 # LlamaIndex Q2:
 # LlamaIndex Q3:
 # LlamaIndex Q4:
+
