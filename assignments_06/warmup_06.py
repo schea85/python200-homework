@@ -197,6 +197,10 @@ print(result_3)
 
 # --- LlamaIndex ---
 
+#set models
+Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
+Settings.llm = OpenAI(model="gpt-3.5-turbo")
+
 # load documents directly from PDFs in the folder
 docs = SimpleDirectoryReader("/Users/schea85/python-200-v1/lessons/06_AI_augmentation/resources/brightleaf_pdfs/").load_data()
 
@@ -204,10 +208,6 @@ docs = SimpleDirectoryReader("/Users/schea85/python-200-v1/lessons/06_AI_augment
 index = VectorStoreIndex.from_documents(docs)
 
 # LlamaIndex Q1:
-
-Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
-
-Settings.llm = OpenAI(model="gpt-3.5-turbo")
 
 query_engine = index.as_query_engine(similarity_top_k=3)
 
