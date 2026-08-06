@@ -31,7 +31,7 @@ else:
 # This will help the model learn to write in that specific brand voice more consistently.
 
 # Scenario C:
-# I would use prompt engineering because it's only one short report.
+# I would use prompt engineering because it's only a short report.
 # The report can just be included in the prompt, so there is no need for RAG or fine-tuning.
 
 # Concepts Q2:
@@ -72,7 +72,7 @@ steps = [
     # The LLM uses the retrieved information to answer the user's question.
 ]
 
-# --- Keyword Rag ---
+# --- Keyword RAG ---
 
 def simple_keyword_retrieval(query, documents, verbose=True):
     """Keyword retrieval using token overlap scoring."""
@@ -298,7 +298,7 @@ print(f"\nQ: {new_question}")
 new_response = new_query.query(new_question)
 print(f"A: {new_response}")
 
-for node in response.source_nodes:
+for node in new_response.source_nodes:
     print(f"Node ID: {node.node.node_id}")
     print(f"Similarity Score: {node.score:.4f}")
     print(f"Text Snippet: {node.node.get_content()[:150]}...")
@@ -320,7 +320,7 @@ for node in response.source_nodes:
 print("\nFaithfulness and Relevancy Evaluators:")
 
 # create judge LLM
-llm = OpenAI(model="gpt-4o-mini", temperature=0.2)
+llm = OpenAI(model="gpt-4o-mini")
 
 # define evaluator
 faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
