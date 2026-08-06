@@ -228,12 +228,63 @@ for q in questions:
         print("-" * 30)
 
 # Comment:
-#
-# a.) Query 1: "What employee benefits does BrightLeaf offer"
-# Of the three chunks, the first one is the relevant and accurate answer.
-# Yes, the AI's response did sound confident and specific.
+
+# Query 1: "What employee benefits does BrightLeaf offer"
+# a.) Of the three chunks, the first one is the most relevant and accurate answer. 
+# The other chunks were not directly related to the employee benefits. They were about the company's
+# mission and partnerships.
+
+# b.) The AI's response/tone did sound confident and specific.
+
+# c.) An unexpected result was that some unrelated documents were retrieved (the last two).
+# This shows that similarity search can sometimes return chunks that are related to the company
+# overall but not directly related to the question.
+# -------------------------------------------------- #
+# Query 2: "What are BrightLeaf's security policies"
+# a.) The answer given was relevant because it came from the security policy document.
+# The other two retrieved chunks were less relevant because they discussed employee benefits
+# and partnership.
+
+# b.) The model's response sounded confident and specific.  It gave detailed explanation of 
+# BrightLeaf's security practices without using uncertain/unsure language.
+
+# c.) Same as the previous query, the last two chunks were not relevant to the question.
+# This probably happened because those two documents mentions BrightLeaf and share some
+# similar language.
 
 # LlamaIndex Q2:
+
+question = "What employee benefits does BrightLeaf offer?"
+
+# top 1 
+query_engine_top1 = index.as_query_engine(similarity_top_k=1)
+
+print("\nTop 1 Response:")
+print(f"Q: {question}")
+response_top1 = query_engine_top1.query(question)
+print(f"A: {response_top1}")
+
+for node in response_top1.source_nodes:
+    print(f"Similarity Score: {node.score:.4f}")
+
+# top 5
+query_engine_top5 = index.as_query_engine(similarity_top_k=5)
+
+print("\nTop 5 Response:")
+print(f"Q: {question}")
+response_top5 = query_engine_top5.query(question)
+print(f"A: {response_top5}")
+
+for node in response_top5.source_nodes:
+    print(f"Similarity Score: {node.score:.4f}")
+
+# Comment:
+# Both the top1 and top5 retrievals gave the same/correct answers.
+# More retrieved context is not always better. Additional context can help when the
+# retrieved chunks contain useful information, but lower-quality or unrelated chunks can
+# add noise and may not improve the response.
+# The most relevant context is often more important than simply retrieving more chunks.
+
 # LlamaIndex Q3:
 # LlamaIndex Q4:
 
