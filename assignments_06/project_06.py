@@ -67,5 +67,41 @@ for q in questions:
     print(f"A: {response}")
     
     for node in response.source_nodes:
+        print(f"File name: {node.node.metadata['file_name']}")
         print(f"Similarity Score: {node.score:.4f}")
+        print(f"Text Snippet: {node.node.get_content()[:200]}...")
         print("-" * 30)
+        
+# Comment:
+# The assistant provided confident and mostly accurate answers based on the
+# Groundwork documents.  Most responses matched the retrieved context, especially
+# the company story and catering questions.  It could have answered about the dairy-free
+# milk options better; like providing a list of the alternatives.
+# No, none of the final answers did not surprise me; it were mostly accurate.
+
+# --- Step 5 - Find a Failure ---
+
+question = "Who is the CEO of Groundwork Coffee?"
+
+response2 = query_engine.query(question)
+
+print(f"Q: {question}")
+print(f"A: {response2}")
+
+for node in response2.source_nodes:
+    print(f"File name: {node.node.metadata['file_name']}")
+    print(f"Similarity Score: {node.score:.4f}")
+    print(f"Text Snippet: {node.node.get_content()[:200]}...")
+    print("-" * 30)
+
+# Comment:
+# I asked the assistant, "Who is the CEO of Groundwork Coffee?"
+# I expected this question to be difficult because the documents mention
+# the founders but does not provide information about a CEO.
+# The model's tone was confident. It retrieved the company story and convincingly answered with the
+# founders instead of stating that the CEO information was unavailable. 
+# In real life, users should always fact check instead of always trusting the AI-generated responses.
+# To improve the system, I would add a prompt instruction to avoid guessing and state when 
+# information is not found in the documents.
+
+# === Step 6 - Reflection ===
