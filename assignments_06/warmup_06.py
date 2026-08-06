@@ -7,8 +7,11 @@ from llama_index.core import (
     Settings
 )
 from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.core.evaluation import FaithfulnessEvaluator, RelevancyEvaluator
 from llama_index.llms.openai import OpenAI
 from pypdf import PdfReader
+
+
 
 if load_dotenv():
     print("API key loaded successfully.")
@@ -286,5 +289,92 @@ for node in response_top5.source_nodes:
 # The most relevant context is often more important than simply retrieving more chunks.
 
 # LlamaIndex Q3:
+
+new_question = "What is BrightLeaf's expected profit by 2030?"
+
+new_query = index.as_query_engine(similarity_top_k=3)
+
+print(f"\nQ: {new_question}")
+new_response = new_query.query(new_question)
+print(f"A: {new_response}")
+
+for node in response.source_nodes:
+    print(f"Node ID: {node.node.node_id}")
+    print(f"Similarity Score: {node.score:.4f}")
+    print(f"Text Snippet: {node.node.get_content()[:150]}...")
+    print("-" * 30)
+
+# Comment:
+# I expected the pipeline to struggle because the documents do not contain information
+# about BrightLeaf's expected profit in 2030.
+# The model responded that the information was not explicitly mentioned in the provided context
+# instead of making up an answer.  
+# The retrieved chunks were not relevant to the question because they discussed network security,
+# employee benefits, and company partnerships rather than financial projections.
+# To improve the system, I would increase the quality of the document collection and adjust
+# the retrieval settings so the model only uses highly relevant chunks. This would
+# reduce the chance of unrelated information being retrieved.
+
 # LlamaIndex Q4:
 
+print("\nFaithfulness and Relevancy Evaluators:")
+
+# create judge LLM
+llm = OpenAI(model="gpt-4o-mini", temperature=0.2)
+
+# define evaluator
+faithfulness_evaluator = FaithfulnessEvaluator(llm=llm)
+relevancy_evaluator = RelevancyEvaluator(llm=llm)
+
+# get response to query
+q = "What employee benefits does BrightLeaf offer?"
+response = query_engine.query(q)
+
+print(f"Q: {q}")
+print(f"A: {response}")
+
+# evaluate faithfulness and relevancy
+faithfulness_result = faithfulness_evaluator.evaluate_response(query=q, response=response)
+print(f"Faithfulness Evaluation: {str(faithfulness_result.score)}")
+
+relevancy_result = relevancy_evaluator.evaluate_response(query=q, response=response)
+print(f"Relevancy Result: {str(relevancy_result.score)}")
+
+# query 2
+q2 = "Who is the CEO of BrightLeaf?"
+q2_response = query_engine.query(q2)
+
+print(f"\nQ: {q2}")
+print(f"A: {q2_response}")
+
+faithfulness_result2 = faithfulness_evaluator.evaluate_response(query=q2, response=q2_response)
+print(f"Faithfulness Evaluation: {str(faithfulness_result2.score)}")
+
+relevancy_result2 = relevancy_evaluator.evaluate_response(query=q2, response=q2_response)
+print(f"Relevancy Result: {str(relevancy_result2.score)}")
+
+# Comment:
+# a.) Faithfulness measures whether the model's response was faithful to the retrieved contexts;
+# whether it contains hallucination or lying.  It can be used to assess the generation step.
+# A faithfulness score of 1.0 means that it has passed the evaluation; it does not contain
+# unsupported claims.
+# A score of 0.0 would indicate that the response contains information that is not supported by the
+# retrieved documents; could be hallucinating and/or lying.
+
+# b.) Relevancy measures whether the model's response is relevant to the query using the 
+# retrieved contexts; whether the response is off-topic or rambling.  This metric can be used
+# to assess the retrieval step.
+# It is different from faithfulness because faithfulness checks whether the answer is supported by 
+# the context, while relevancy checks whether the answer addresses what the user actually asked.
+
+# c.) Yes, the scores changed between the two queries. 
+# The employee benefits question received a faithfulness and relevancy scores of 1.0 because the information
+# were available in the BrightLeaf documents and the response directly answered the question.
+# The CEO question received a faithfulness score of 1.0 because the model correctly stated
+# that the information was not available (did not hallucinate), but it received a relevancy score of 0.0 
+# because it did not provide the requested CEO information.
+
+# d.) The LLM-as-a-judge approach uses a separate LLM to evaluate the quality of RAG responses.
+# This is useful because natural language answers are difficult to measure with simple
+# accuracy metrics.  The judge LLM can evaluate whether a response is supported by the 
+# retrieved context and whether it answers the user's question.
