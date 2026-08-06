@@ -105,3 +105,15 @@ for node in response2.source_nodes:
 # information is not found in the documents.
 
 # === Step 6 - Reflection ===
+
+# 1.) The LlamaIndex implementation only took a few lines, maybe around 10-15 lines of code to
+# build this whole project. Using a framework can simplify development and reduce boilerplate code.
+# Makes for a more efficient pipeline.
+
+# 2.) An IT department could use a RAG system to answer employee questions using
+# internal documentations, troubleshooting guides, and software manuals.
+
+# 3.) One failure mode that RAG cannot fully prevent is answering confidently
+# when the retrieved documents are related but do not actually contain the correct information.
+# The model may still give incorrect answers instead of recognizing that the
+# answer is unavailable.
