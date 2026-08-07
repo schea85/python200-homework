@@ -106,8 +106,10 @@ for node in response2.source_nodes:
 
 # === Step 6 - Reflection ===
 
-# 1.) The LlamaIndex implementation only took a few lines, maybe around 10-15 lines of code to
-# build this whole project. Using a framework can simplify development and reduce boilerplate code.
+# 1.) The LlamaIndex implementation only took 10-15 lines of code to
+# build this whole project. 
+# The framework uses only a few lines of code to build.
+# Using a framework can simplify development and reduce boilerplate code.
 # Makes for a more efficient pipeline.
 
 # 2.) An IT department could use a RAG system to answer employee questions using

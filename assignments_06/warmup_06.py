@@ -31,8 +31,9 @@ else:
 # This will help the model learn to write in that specific brand voice more consistently.
 
 # Scenario C:
-# I would use prompt engineering because it's only a short report.
-# The report can just be included in the prompt, so there is no need for RAG or fine-tuning.
+# I would use RAG because the analyst needs the LLM to answer questions using information
+# from the specific document. RAG retrieves relevant information from the report
+# and uses it to generated grounded answers.
 
 # Concepts Q2:
 
@@ -130,6 +131,7 @@ result = simple_keyword_retrieval(query, documents, verbose=True)
 print(result)
 
 # Comment:
+# It should have selected hours.txt since it contains "weekends."
 # The selected document was loyalty.txt. It was selected because the keyword
 # retriever found a tie between multiple documents with one matching keyword.
 # Since the function sorts the tied results in reverse alphabetical order,
@@ -145,12 +147,11 @@ result_2 = simple_keyword_retrieval(query, documents, verbose=True)
 print(result_2)
 
 # Comment:
-# The selected document was 'None found' because the keyword retriever could not find exact
-# keyword matches between the query and the documents.
+# No document was selected because the exact keyword "caffeine" was not found.
 # The Keyword-retrieval RAG did not get this right because it only looks for matching words
-# and does not understand espresso, lattes, cappuccinos, and cold brew are related to 
+# and does not understand that espresso, lattes, cappuccinos, and cold brew are related to 
 # caffeine.
-# An embedding-based retrieval system would do better because it understands the semantic
+# An semantic/embedding-based retrieval system would do better because it understands the semantic
 # and relationships between words, even when the exact keywords are not the same.  Based on
 # cosine similarity.
 
@@ -356,12 +357,12 @@ print(f"Relevancy Result: {str(relevancy_result2.score)}")
 # Comment:
 # a.) Faithfulness measures whether the model's response was faithful to the retrieved contexts;
 # whether it contains hallucination or lying.  It can be used to assess the generation step.
-# A faithfulness score of 1.0 means that it has passed the evaluation; it does not contain
-# unsupported claims.
+# A faithfulness score of 1.0 means that it has passed the evaluation; it is fully supported by the
+# retrieved context.
 # A score of 0.0 would indicate that the response contains information that is not supported by the
 # retrieved documents; could be hallucinating and/or lying.
 
-# b.) Relevancy measures whether the model's response is relevant to the query using the 
+# b.) Relevancy measures whether the model's answer actually addresses the query using the 
 # retrieved contexts; whether the response is off-topic or rambling.  This metric can be used
 # to assess the retrieval step.
 # It is different from faithfulness because faithfulness checks whether the answer is supported by 
