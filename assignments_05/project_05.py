@@ -85,6 +85,8 @@ def rewrite_bullets(bullets: list[str]) -> list[dict]:
         print("Error: response was not a valid JSON")
         print("Raw response:", response)
 
+        return []
+    
 bullets = [
     "Helped customers with their problems",
     "Made reports for the management team",

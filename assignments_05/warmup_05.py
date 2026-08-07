@@ -255,7 +255,7 @@ print("Raw response:", response)
 try:
     result = json.loads(response)
     print("Parsed sentiment:", result["sentiment"])
-    print("Confidence:", result["confidence"])
+    print("Confidence:", float(result["confidence"]))
     print("Reason:", result["reason"])
 except json.JSONDecodeError as e:
     print(f"Error: {e}")
@@ -294,7 +294,7 @@ print(response)
 
 # Comment:
 # Delimiters are simple markers that clearly separates the sections.  
-# They help prevent confusion for the model.
+# Delimiters help prevent confusion for the model.
 # They keep the prompt organized and make it easier for the model to distinguish
 # between instructions and user-provided text.
 
@@ -315,7 +315,12 @@ processes information in parallel, enabling rapid decision-making and understand
 
 # Comment:
 # The OpenAI and Ollama responses were similar/usefulness because they explained the concept of 
-# LLMs.  The main difference that I noticed were the wording and level of detail between the two.
+# LLMs.  The main difference that I noticed were the wording, level of detail, and style of the two responses.
+# The OpenAI response was more specific and directly explained what a LLM is, including that it generates
+# human-like text and uses deep learning and neural networks.
+# The Ollama response was shorter and focused more on patter recognition, predictions, and processing 
+# information. I found the OpenAI response more useful because it was more directly related to the question
+# for a beginner to understand.
 # One advantage of running a model locally is privacy because the data does not leave your computer.
 # One disadvantage is that local model may be less powerful and require more
 # hard resources depending on which model you install.
