@@ -31,19 +31,18 @@ else:
 # This will help the model learn to write in that specific brand voice more consistently.
 
 # Scenario C:
-# I would use RAG because the analyst needs the LLM to answer questions using information
-# from the specific document. RAG retrieves relevant information from the report
-# and uses it to generated grounded answers.
+# I would use prompt engineering because I can paste the two-page report directly into
+# the model's context window, without having to build anything more complicated.
 
 # Concepts Q2:
 
-# A confidently wrong answer is more harmful because people are more likely to believe it and act on it.
+# A confident wrong answer is more harmful because people are more likely to trust it and act on it.
 # Majority of the time, people rely on their AI for answers without fact-checking.
 # Instead, if the model says "I'm not sure," then the user knows to do their own research.
 # An example of a real situation where a confident hallucination could cause harm,
 # is if an AI gives incorrect medical advice with confidence/certainty, some people could take the wrong medicine
 # or delay getting the proper treatment.
-# The tone also matters because a confident response sounds trustworthy, even when the information 
+# The tone also matters because a confident/authoritative response sounds trustworthy, even when the information 
 # is incorrect.
 
 # Concepts Q3:
@@ -147,11 +146,11 @@ result_2 = simple_keyword_retrieval(query, documents, verbose=True)
 print(result_2)
 
 # Comment:
-# No document was selected because the exact keyword "caffeine" was not found.
-# The Keyword-retrieval RAG did not get this right because it only looks for matching words
+# No document contains any of the keywords. It returned "None found."
+# The Keyword RAG did not get this right because it only looks for matching words
 # and does not understand that espresso, lattes, cappuccinos, and cold brew are related to 
 # caffeine.
-# An semantic/embedding-based retrieval system would do better because it understands the semantic
+# An semantic/embedding approach would do better because it understands the semantic
 # and relationships between words, even when the exact keywords are not the same.  Based on
 # cosine similarity.
 
@@ -194,7 +193,7 @@ print(result_3)
 # | Feature                    | Keyword RAG                       | Semantic RAG |
 # |----------------------------|-----------------------------------|--------------|
 # | What is compared?          | Exact word overlap                | vector embeddings          |
-# | What is retrieved?         | Full document                     | text chunks                |
+# | What is retrieved?         | Full document                     | relevant text chunks       |
 # | Can it handle synonyms?    | No                                | yes                        |
 # | Storage format             | Plain text dictionary             | vector store/index         |
 # | Relevance score            | Number of overlapping keywords    | cosine similarity score    |
@@ -226,7 +225,7 @@ for q in questions:
     print("A:", response)
 
     for node_with_score in response.source_nodes:
-        print(f"Node ID: {node_with_score.node.node_id}")
+        # print(f"Node ID: {node_with_score.node.node_id}")
         print(f"Similarity Score: {node_with_score.score:.4f}")
         print(f"Text Snippet: {node_with_score.node.get_content()[:150]}...")
         print("-" * 30)
@@ -243,6 +242,7 @@ for q in questions:
 # c.) An unexpected result was that some unrelated documents were retrieved (the last two).
 # This shows that similarity search can sometimes return chunks that are related to the company
 # overall but not directly related to the question.
+
 # -------------------------------------------------- #
 # Query 2: "What are BrightLeaf's security policies"
 # a.) The answer given was relevant because it came from the security policy document.
