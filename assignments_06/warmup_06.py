@@ -206,7 +206,7 @@ Settings.embed_model = OpenAIEmbedding(model="text-embedding-3-small")
 Settings.llm = OpenAI(model="gpt-3.5-turbo")
 
 # load documents directly from PDFs in the folder
-docs = SimpleDirectoryReader("/Users/schea85/python-200-v1/lessons/06_AI_augmentation/resources/brightleaf_pdfs/").load_data()
+docs = SimpleDirectoryReader("assignments_06/brightleaf_pdfs/").load_data()
 
 # build a vector index - handles chunks + embedding
 index = VectorStoreIndex.from_documents(docs)
