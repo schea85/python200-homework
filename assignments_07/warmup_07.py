@@ -737,34 +737,88 @@ print(compute_correlation.description)
 # As the developer, I need to provide typed parameters and clear, detailed docstring.
 
 # Q8:
-# create and test tool calling agent
-# model_to_use = "gpt-4o-mini"
-# model = OpenAIServerModel(
-#     api_key=api_key,
-#     model_id=model_to_use
-# )
+# === TOOL CALLING AGENT ===
+model_to_use = "gpt-4o-mini"
+model = OpenAIServerModel(
+    api_key=api_key,
+    model_id=model_to_use
+)
 
-# TOOLS = [
-#     list_csv_files,
-#     load_csv,
-#     get_columns,
-#     summarize_columns,
-#     describe_column,
-#     plot_data,
-#     compute_correlation
-# ]
+TOOLS = [
+    list_csv_files,
+    load_csv,
+    get_columns,
+    summarize_columns,
+    describe_column,
+    plot_data,
+    compute_correlation
+]
 
-# SYSTEM_PROMPT = (
-#     "You are a small data assistant to help analyze files stored in resources/. "
-#     "Use the available tools to do any work requested (do not guess). "
-#     "Keep answers short and student-friendly."
-# )
+SYSTEM_PROMPT = (
+    "You are a small data assistant to help analyze files stored in resources/. "
+    "Use the available tools to do any work requested (do not guess). "
+    "Keep answers short and student-friendly."
+)
 
-# tool_agent = ToolCallingAgent(tools=TOOLS,
-#                               model=model,
-#                               instructions=SYSTEM_PROMPT,)
+tool_agent = ToolCallingAgent(tools=TOOLS,
+                              model=model,
+                              instructions=SYSTEM_PROMPT,)
 
+prompt = "Load bike_commute.csv. Plot avg_heart_rate vs duration_min as a scatter plot with green dots."
 
+response_tool = tool_agent.run(prompt)
 
+# === CODE CALLING AGENT ===
+CODE_INSTRUCTIONS = """
+You are a helpful CSV analysis assistant.
+
+You can do two kinds of actions:
+1) Call the provided tools.
+2) Write and execute Python code when tools are not enough.
+
+Rules:
+- Prefer tools for simple tasks.
+- IMPORTANT: If the user requests plot styling (color, marker, title text, labels, grid, etc.)
+  that the plot_data tool cannot control, DO NOT call plot_data.
+  Instead, write matplotlib code directly so the plot matches the request.
+  If code execution fails, do not fall back to plot_data when the user requested styling (like color). 
+  Explain what failed and what you would need to proceed.
+- Be honest: only claim you did something if the code or tool actually did it.
+- Assume the active dataset lives in csv_manager.df after a CSV is loaded.
+"""
+
+code_agent = CodeAgent(
+    tools=TOOLS,
+    model=model,
+    instructions=CODE_INSTRUCTIONS,
+    additional_authorized_imports=["pandas", "matplotlib.pyplot", "numpy"],
+    max_steps=8,
+)
+
+response_code = code_agent.run(prompt, additional_args={"csv_manager": csv_manager})
+
+print("\n")
+print("Tool Agent Response:")
+print(response_tool)
+print("Code Agent Response:")
+print(response_code)
+
+# Comment:
+# 1.) The ToolCallingAgent used the plot_data tool, but it did not change the dot color
+# because the tool does not have an option for changing the color.
+# The CodeAgent was able write Python code directly, so it was able to generate a plot with green 
+# dots as requested.
+
+# 2.) This shows that ToolCallingAgents are more useful when a task matches predefined
+# actions because they are more predictable and controlled. (safe)
+# CodeAgents are more flexible and can handle new or custom requests, but
+# they also run generated code, which can have more risks.
 
 # Q9:
+# 1.) A ToolCallingAgent would be a better choice for a task like loading a CSV
+# and getting basic summary statistics. The task can be completed using
+# predefined tools, which makes the agent more predictable and controlled.
+
+# 2.) One risk of using a CodeAgent is that it generates and runs its own code. 
+# This gives it more flexibility, but the generated code could contain errors
+# or do something unexpected. A risk that ToolCallingAgents don't have.
