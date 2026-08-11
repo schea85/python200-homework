@@ -7,6 +7,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy.stats import pearsonr
+from smolagents import ToolCallingAgent, OpenAIServerModel, tool
+from smolagents import CodeAgent
 
 
 
@@ -614,18 +616,155 @@ def run_agent():
         print(f"User query: {user_text}")
         assistant_text = run_agent_cycle(messages, user_text)
         print(f"\nAssistant: {assistant_text}\n")
-        
+
+# Q5:
 print("\n")
 messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 result = run_agent_cycle(messages, "Load bike_commute.csv and compute the correlation between avg_traffic_density and avg_speed_kmh.")
 print(result)
 
-
-# Q5:
 # Q6:
+print("\n")
+print(json.dumps(messages, indent=2, default=str))
 
 # --- Lesson 04: smolagents ---
 
+api_key = os.getenv("OPENAI_API_KEY")
+
 # Q7:
+csv_manager = CsvManager(resources_dir=RESOURCES_DIR)
+
+@tool
+def list_csv_files() -> dict:
+    """List available CSV files in resources/.
+
+    Returns:
+        A dict with a "files" list, or a message if none are found.
+    """
+    return csv_manager.list_csv_files()
+
+
+@tool
+def load_csv(filename: str) -> dict:
+    """Load a CSV file from resources/ and make it the active dataset.
+
+    Args:
+        filename: CSV filename in resources/. You can pass "bike_commute" or "bike_commute.csv".
+
+    Returns:
+        A dict with a status message and column names, or an error dict.
+    """
+    return csv_manager.load_csv(filename)
+
+
+@tool
+def get_columns() -> list[str] | dict:
+    """Return column names for the currently loaded CSV.
+
+    Returns:
+        A list of column names, or an error dict if no CSV is loaded.
+    """
+    return csv_manager.get_columns()
+
+
+@tool
+def summarize_columns(columns: list[str] | None = None) -> dict:
+    """Return summary stats for selected columns (or all columns). 
+    This includes count, mean, std, min, max, and percentiles for numeric columns,
+    or count, unique, top, freq for categorical columns.
+
+    Args:
+        columns: Column names to summarize. If None, summarizes all columns.
+
+    Returns:
+        A dict of summary statistics (from pandas.describe), or an error dict.
+    """
+    return csv_manager.summarize_columns(columns)
+
+
+@tool
+def describe_column(column: str) -> dict:
+    """Describe a single column (basic stats) for the requested column.
+    This includes count, mean, std, min, max, and percentiles for numeric column,
+    or count, unique, top, freq for categorical column.
+
+    Args:
+        column: The name of the column to describe.
+
+    Returns:
+        A dict of basic stats for the column, or an error dict.
+    """
+    return csv_manager.describe_column(column)
+
+
+@tool
+def plot_data(y: str, x: str | None = None, plot_type: str = "line") -> str | dict:
+    """Plot from the active CSV.
+
+    Args:
+        y: Column name to plot on the y-axis. 
+        x: Column name to plot on the x-axis. If None, use row index.
+        plot_type: "line" or "scatter". Scatter requires x and y.
+
+    Returns:
+        Generates and shows the plot. 
+        Retrims a short success message string, or an error dict/string.
+    """
+    return csv_manager.plot_data(y=y, x=x, plot_type=plot_type)
+
+@tool
+def compute_correlation(col1: str, col2: str) -> dict:
+    """
+    Compute the Pearson correlation between the two columns in the loaded CSV file.
+    
+    Args:
+        col1: The name of the first column.
+        col2: The name of the second column.
+        
+    Returns:
+        A dictionary containing the column names, Pearson correlation 
+        coefficient, and p-value.
+    """
+    return csv_manager.compute_correlation(col1, col2)
+
+print("\nCompute Correlation Description:")
+print(compute_correlation.description)
+
+# Comment:
+# Smolagents automatically builds the tool description from the function
+# signature, type hints, and docstring. Unlike Q4, where the JSON schema
+# was created manually, smolagents generates it for me.
+# As the developer, I need to provide typed parameters and clear, detailed docstring.
+
 # Q8:
+# create and test tool calling agent
+# model_to_use = "gpt-4o-mini"
+# model = OpenAIServerModel(
+#     api_key=api_key,
+#     model_id=model_to_use
+# )
+
+# TOOLS = [
+#     list_csv_files,
+#     load_csv,
+#     get_columns,
+#     summarize_columns,
+#     describe_column,
+#     plot_data,
+#     compute_correlation
+# ]
+
+# SYSTEM_PROMPT = (
+#     "You are a small data assistant to help analyze files stored in resources/. "
+#     "Use the available tools to do any work requested (do not guess). "
+#     "Keep answers short and student-friendly."
+# )
+
+# tool_agent = ToolCallingAgent(tools=TOOLS,
+#                               model=model,
+#                               instructions=SYSTEM_PROMPT,)
+
+
+
+
 # Q9:
