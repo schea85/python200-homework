@@ -11,8 +11,15 @@ from smolagents import ToolCallingAgent, OpenAIServerModel, tool
 from smolagents import CodeAgent
 
 
+
+if load_dotenv():
+    print("Successfully loaded environment variables from .env")
+else:
+    print("Warning: could not load environment variables from .env")
+api_key = os.getenv("OPENAI_API_KEY")
+
 # --- Pre-Task: Load the Data ---
-DATA_PATH = "assignments_01/outputs/merged_happiness.csv"
+DATA_PATH = "../assignments_01/outputs/merged_happiness.csv"
 
 # --- Task 1: Define Tools ---
 df = None
@@ -22,6 +29,10 @@ df = None
 def load_happiness_data() -> dict:
     """Load the World Happiness dataset into memory.
     
+    Loads the merged World Happiness CSV from DATA_PATH. If the merged
+    file does not exists, loads and merges the yearly CSV files from
+    assignment
+    
     Returns: 
         A dict with "shape" and "columns"
     """
@@ -30,13 +41,14 @@ def load_happiness_data() -> dict:
     
     if Path(DATA_PATH).exists():
         df = pd.read_csv(DATA_PATH)
+    
     else:
     # loop
         years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024]
         happiness_dfs = []
         
         for year in years:
-            file = f"assignments_01/csv/world_happiness_{year}.csv"
+            file = f"../assignments_01/csv/world_happiness_{year}.csv"
             yearly_df = pd.read_csv(file, sep=";", decimal=",")
             yearly_df["year"] = year
                 
@@ -136,6 +148,99 @@ def get_top_n_countries(column: str, year: int, n: int = 5) -> dict:
     top_countries = filtered.sort_values(column, ascending=False).head(n)
     
     return {
-        "countries": top_countries[["country", column]].to_dict("records")
+        "countries": top_countries[["Country", column]].to_dict("records")
     }
     
+# --- Task 2: Build the Agent ---
+model = OpenAIServerModel(api_key=api_key, model_id="gpt-4o-mini")
+
+SYSTEM_PROMPT = """
+You are a data analyst assistant for the World Happiness dataset.
+Use the available tools for loading data, summarizing columns, computing correlations,
+and ranking countries. Write Python code directly only when the tools are not sufficient
+(for example, when creating custom plots or computing something the tools don't cover).
+Be concise and student-friendly in your responses.
+"""
+
+agent = CodeAgent(
+    tools=[load_happiness_data, summarize_column, compute_correlation, get_top_n_countries],
+    model=model,
+    instructions=SYSTEM_PROMPT,
+    additional_authorized_imports=["pandas", "matplotlib.pyplot", "scipy.stats"],
+    max_steps=8,
+)
+
+# --- Task 3: Run Guided Queries ---
+queries = [
+    "Load the happiness data and tell me its shape and column names.",
+    "Summarize the happiness_score column.",
+    "What is the correlation between gdp_per_capita and happiness_score? Is it statistically significant?",
+    "Show me the top 5 happiest countries in 2020.",
+    "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs folder as happiness_by_region.png.",
+]
+
+for query in queries:
+    print(f"\n--- Query: {query} ---")
+    response = agent.run(query, reset=False)
+    print(response)
+    
+# --- Task 4: My Own Questions ---
+my_query_1 = "Using the loaded dataset, what was the average happiness score for 2019?"
+response_1 = agent.run(my_query_1, reset=False)
+print(response_1)
+# Comments: 
+
+my_query_2 = "What are the top 3 happiest countries in 2019?"
+response_2 = agent.run(my_query_2, reset=False)
+print(response_2)# Comments:
+
+# --- Task 5: Reflection ---
+#
+# 1. In Query 3, how did the agent communicate whether the correlation was statistically
+#    significant? Did it use the p-value correctly? What threshold did it apply?
+#
+#    The agent used the p-value to determine if the correlation was statistically 
+#    significant. It used 0.05 as the threshold.
+#
+# 2. Did any of the agent's responses surprise you — either by being more capable than
+#    you expected, or less? Describe one specific example.
+#
+#    I was surprised that the agent could use my tools to analyze the dataset and find
+#    the top happiest countries. I was also surprised that when it could not access
+#    the actual data for the plot, it generated mock data instead of recognizing
+#    that it did not have the data. (hallucinate)
+#
+# 3. What one additional tool would make this agent meaningfully more useful?
+#    Describe what it would do and what kind of question it would help the agent answer.
+#    (You do not need to implement it.)
+#
+#    An additional tool that would be useful is a tool for finding the average
+#    happiness score by region. This would make it easier to compare regions and 
+#    answer questions about regional trends.
+
+# --- Running the Project ---
+if __name__ == "__main__":
+    
+    # Task 3: Guided Queries
+    queries = [
+        "Load the happiness data and tell me its shape and column names.",
+        "Summarize the happiness_score column.",
+        "What is the correlation between gdp_per_capita and happiness_score? Is it statistically significant?",
+        "Show me the top 5 happiest countries in 2020.",
+        "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs/happiness_by_region.png.",
+    ]
+
+    for query in queries:
+        print(f"\n--- Query: {query} ---")
+        response = agent.run(query, reset=False)
+        print(response)
+        
+    # Task 4: My Queries
+    my_query_1 = "What was the average happiness score for each year?"
+    response_1 = agent.run(my_query_1, reset=False)
+    print(response_1)
+    
+    my_query_2 = "What are the top 10 countries by happiness in 2020?"
+    response_2 = agent.run(my_query_2, reset=False)
+    print(response_2)
+        
