@@ -18,6 +18,8 @@ else:
     print("Warning: could not load environment variables from .env")
 api_key = os.getenv("OPENAI_API_KEY")
 
+Path("outputs").mkdir(exist_ok=True)
+
 # --- Pre-Task: Load the Data ---
 DATA_PATH = "../assignments_01/outputs/merged_happiness.csv"
 
@@ -30,11 +32,11 @@ def load_happiness_data() -> dict:
     """Load the World Happiness dataset into memory.
     
     Loads the merged World Happiness CSV from DATA_PATH. If the merged
-    file does not exists, loads and merges the yearly CSV files from
-    assignment
+    file does not exist, loads and merges the yearly CSV files from
+    assignments_01/csv/.
     
     Returns: 
-        A dict with "shape" and "columns"
+        A dict with "shape" and "columns" of the dataframe.
     """
     
     global df
@@ -62,7 +64,7 @@ def load_happiness_data() -> dict:
     
     return {
         "shape": df.shape,
-        "columns": df.columns.tolist()
+        "columns": list(df.columns)
     }
     
 # summarize_column tool
@@ -71,7 +73,7 @@ def summarize_column(column: str) -> dict:
     """Return descriptive statistics for a single column in the loaded dataset.
     
     Args:
-        column: The name of the column to summarize.
+        column (str): The name of the column to summarize.
         
     Returns:
         A dictionary containing descriptive statistics for the column.
@@ -107,8 +109,9 @@ def compute_correlation(col1: str, col2: str) -> dict:
     if col2 not in df.columns:
         return{"error": f"'{col2}' is not a column."}
     
+    clean_df = df[[col1, col2]].dropna()
     
-    pearson_r, p_value= pearsonr(df[col1], df[col2])
+    pearson_r, p_value= pearsonr(clean_df[col1], clean_df[col2])
         
     return {
         "col1": col1,
@@ -176,7 +179,7 @@ queries = [
     "Summarize the happiness_score column.",
     "What is the correlation between gdp_per_capita and happiness_score? Is it statistically significant?",
     "Show me the top 5 happiest countries in 2020.",
-    "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs folder as happiness_by_region.png.",
+    "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs/happiness_by_region.png.",
 ]
 
 for query in queries:
@@ -188,34 +191,44 @@ for query in queries:
 my_query_1 = "Using the loaded dataset, what was the average happiness score for 2019?"
 response_1 = agent.run(my_query_1, reset=False)
 print(response_1)
-# Comments: 
+# Comments:
+# The agent generated its own code instead of using the loaded
+# dataset and mostly hallucinated.
+# The agent created a mock dataset after encountering an error;
+# so the result not based on the actual World Happiness data.
 
 my_query_2 = "What are the top 3 happiest countries in 2019?"
 response_2 = agent.run(my_query_2, reset=False)
-print(response_2)# Comments:
+print(response_2)
+# Comments: 
+# The agent was able to answer this question correctly.
+# It used the available tools to get the answer.
 
 # --- Task 5: Reflection ---
 #
 # 1. In Query 3, how did the agent communicate whether the correlation was statistically
 #    significant? Did it use the p-value correctly? What threshold did it apply?
 #
-#    The agent used the p-value to determine if the correlation was statistically 
-#    significant. It used 0.05 as the threshold.
+#    The agent used the compute_correlation tool to calculate the Pearson correlation
+#    coefficient and p-value. It used the p-value to determine if the correlation was statistically 
+#    significant and applied the standard/default 0.05 threshold. 
 #
 # 2. Did any of the agent's responses surprise you — either by being more capable than
 #    you expected, or less? Describe one specific example.
 #
-#    I was surprised that the agent could use my tools to analyze the dataset and find
-#    the top happiest countries. I was also surprised that when it could not access
-#    the actual data for the plot, it generated mock data instead of recognizing
-#    that it did not have the data. (hallucinate)
+#    The agent was mostly able to answer the questions in the query set correctly.
+#    It used the available tools to obtain the correct answers.
+#    The agent was able to generate a plot but incorrectly. Giving it a plot tool would
+#    help.
 #
 # 3. What one additional tool would make this agent meaningfully more useful?
 #    Describe what it would do and what kind of question it would help the agent answer.
 #    (You do not need to implement it.)
 #
 #    An additional tool that would be useful is a tool for finding the average
-#    happiness score by region. This would make it easier to compare regions and 
+#    happiness score by region.  The region is listed in the csv, under regional indicator,
+#    however, agent has a hard figuring that out. So I should, either manually change the column's name
+#    or write an additional tool. This would make it easier for the agent to compare regions and 
 #    answer questions about regional trends.
 
 # --- Running the Project ---
@@ -236,11 +249,11 @@ if __name__ == "__main__":
         print(response)
         
     # Task 4: My Queries
-    my_query_1 = "What was the average happiness score for each year?"
+    my_query_1 = "Using the loaded dataset, what was the average happiness score for 2019?"
     response_1 = agent.run(my_query_1, reset=False)
     print(response_1)
-    
-    my_query_2 = "What are the top 10 countries by happiness in 2020?"
+
+    my_query_2 = "What are the top 3 happiest countries in 2019?"
     response_2 = agent.run(my_query_2, reset=False)
     print(response_2)
         
