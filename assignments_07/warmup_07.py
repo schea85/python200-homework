@@ -26,7 +26,7 @@ def get_current_time() -> str:
     '''Return the current local time as a formatted string.'''
     return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-# Q1:
+# Q1).
 def celsius_to_fahrenheit(celsius: float) -> str:
     """Convert a Celsius temperature to Fahrenheit and return it as a formatted string."""
     fahrenheit = (celsius * 9 / 5) + 32
@@ -66,7 +66,7 @@ celsius_temps = [0, 10, -40]
 for temp in celsius_temps:
     print(celsius_to_fahrenheit(temp))
     
-# Q2:
+# Q2).
 def run_agent(user_prompt: str) -> str:
     '''Run a minimal ReAct-style agent for a single user prompt.'''
 
@@ -157,7 +157,7 @@ print("\n")
 answer_with_agent_q2 = run_agent("Convert 100 degrees Celsius to Fahrenheit")
 print(answer_with_agent_q2)
 
-# Q3:
+# Q3).
 print("\n")
 response_a = run_agent("What is 37 degrees Celsius in Fahrenheit?")
 print("Response A:", response_a)
@@ -172,7 +172,7 @@ print("Response B:", response_b)
 
 # --- Lesson 03: Multi-Tool Agent ---
 
-# Q4:
+# Q4).
 RESOURCES_DIR = Path("assignments_07/resources/")
 
 class CsvManager:
@@ -617,13 +617,13 @@ def run_agent():
         assistant_text = run_agent_cycle(messages, user_text)
         print(f"\nAssistant: {assistant_text}\n")
 
-# Q5:
+# Q5).
 print("\n")
 messages = [{"role": "system", "content": SYSTEM_PROMPT}]
 result = run_agent_cycle(messages, "Load bike_commute.csv and compute the correlation between avg_traffic_density and avg_speed_kmh.")
 print(result)
 
-# Q6:
+# Q6).
 print("\n")
 print(json.dumps(messages, indent=2, default=str))
 
@@ -631,7 +631,7 @@ print(json.dumps(messages, indent=2, default=str))
 
 api_key = os.getenv("OPENAI_API_KEY")
 
-# Q7:
+# Q7).
 csv_manager = CsvManager(resources_dir=RESOURCES_DIR)
 
 @tool
@@ -736,7 +736,7 @@ print(compute_correlation.description)
 # was created manually, smolagents generates it for me.
 # As the developer, I need to provide typed parameters and clear, detailed docstring.
 
-# Q8:
+# Q8).
 # === TOOL CALLING AGENT ===
 model_to_use = "gpt-4o-mini"
 model = OpenAIServerModel(
@@ -814,7 +814,7 @@ print(response_code)
 # CodeAgents are more flexible and can handle new or custom requests, but
 # they also run generated code, which can have more risks.
 
-# Q9:
+# Q9)
 # 1.) A ToolCallingAgent would be a better choice for a task like loading a CSV
 # and getting basic summary statistics. The task can be completed using
 # predefined tools, which makes the agent more predictable and controlled.
