@@ -29,7 +29,7 @@ df = None
 # load_happiness_data tool
 @tool
 def load_happiness_data() -> dict:
-    """Load the World Happiness dataset into memory.
+    """Load the World Happiness dataset into memory and make it the active dataset.
     
     Loads the merged World Happiness CSV from DATA_PATH. If the merged
     file does not exist, loads and merges the yearly CSV files from
@@ -219,7 +219,7 @@ print(response_2)
 #    The agent was mostly able to answer the questions in the query set correctly.
 #    It used the available tools to obtain the correct answers.
 #    The agent was able to generate a plot but incorrectly. Giving it a plot tool would
-#    help.
+#    help. Or maybe add more rules to the system_prompt, like not making up answers. 
 #
 # 3. What one additional tool would make this agent meaningfully more useful?
 #    Describe what it would do and what kind of question it would help the agent answer.
