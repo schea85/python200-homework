@@ -46,16 +46,48 @@ and data.
 For example, GitHub Codespace.
 As the developer, I am mainly responsible for my code and application, while the provider manages the infrastructure and platform.
 
-* Saas (Software as a Service): Is a software that is already built and provided over the internet. 
+* SaaS (Software as a Service): Is a software that is already built and provided over the internet. 
 For example, Gmail.
 As the developer, I am responsible mainly for using and configuring the software; the provider manages the application, infrastructure, and maintenance.
 
 ### Cloud Concepts Q4:
+A fully-managed platform like Databricks or Snowflake is built on top of raw cloud. Instead of building and maintaining everything yourself with AWS or GCP services, the platform provides a more ready-to-use data environment.
+Gains: easier setup and management, less infrastructure to maintain, integrated tooling, faster to get started with large-scale data processing or machine learning.
+Give up: some control, flexibility and potentially higher costs.
+
 ### Cloud Concepts Q5:
+1.) Small/simple workloads - Cloud costs and complexity may not be worth it.
+2.) Strict security, data location, or hardware control requirements - Makes cloud use impractical.
 
 ## --- Part 2: Warmup - Cloud Landscape ---
 
 ### Cloud Landscape Q1:
+1.) Amazon Web Services (AWS): the oldest and largest cloud market.
+Widely used by startups, large enterprise, or a nonprofit with engineering staff.
+
+2.) Google Cloud Platform (GCP): the strongest in data and machine learning.
+Used by data-driven companies and organizations focused on machine learning.
+
+3.) Microsoft Azure: strong in enterprise and Microsoft-based environment, making it popular with large businesses and organization already using Microsoft products.
+
 ### Cloud Landscape Q2:
+1.) Access - Because it's easier for students to set up; students can create their own account within minutes without waiting for organizational approval.
+
+2.) Better for learning - Supabase uses relational tables, which teaches database skills that are useful in many data jobs.
+
+3.) Fits the pipeline - Supabase makes it easy to organize the raw and enriched data into separate tables and inspect each stage.
+
+Reflection: I should choose a cloud tool based on the project's needs, ease of use, cost and how well it supports the skills and goals of the project.
+
 ### Cloud Landscape Q3:
+1.) Object storage - Amazon S3.
+
+2.) GPU compute - AWS EC2.
+
+3.) Serverless compute - AWS Lambda.
+
+4.) LLM API - OpenAI API
+
 ### Cloud Landscape Q4:
+I could build a job-search data pipeline that collect job postings, stores them, cleans the data, and display the results in a dashboard. I could use AWS S3 for object storage and Supabase for a managed database.
+Consolidating to one provider could make the project simpler to manage and integrate, but I would give up flexibility and the ability to choose the best tool for each job.
