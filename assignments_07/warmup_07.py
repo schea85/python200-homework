@@ -41,7 +41,8 @@ tools = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                        "celsius": {"type": "number"}
+                        "celsius": {"type": "number"},
+                        "description": "The temperature in degrees Celsius."
                     },
                 "required": ["celsius"],
             },
@@ -61,10 +62,9 @@ tools = [
     }
 ]
 
-celsius_temps = [0, 10, -40]
-
-for temp in celsius_temps:
-    print(celsius_to_fahrenheit(temp))
+print(celsius_to_fahrenheit(0))
+print(celsius_to_fahrenheit(100))
+print(celsius_to_fahrenheit(-40))
     
 # Q2).
 def run_agent(user_prompt: str) -> str:
@@ -161,19 +161,17 @@ print(answer_with_agent_q2)
 print("\n")
 response_a = run_agent("What is 37 degrees Celsius in Fahrenheit?")
 print("Response A:", response_a)
-# Comment:
 # A matching tool does exist so the agent calls it.
 
 print("\n")
 response_b = run_agent("What is the boiling point of water in plain English?")
 print("Response B:", response_b)
-# Comment:
 # No tool needed, so the agent answers using its own knowledge.
 
 # --- Lesson 03: Multi-Tool Agent ---
 
 # Q4).
-RESOURCES_DIR = Path("assignments_07/resources/")
+RESOURCES_DIR = Path("resources/")
 
 class CsvManager:
     def __init__(self, resources_dir: Path):
@@ -363,7 +361,9 @@ class CsvManager:
         if col2 not in self.df.columns:
             return{"error": f"'{col2}' is not a column."}
         
-        pearson_r, p_value = pearsonr(self.df[col1], self.df[col2])
+        data = self.df[[col1, col2]].dropna()
+        
+        pearson_r, p_value = pearsonr(data[col1], data[col2])
         
         return {
             "col1": col1,
@@ -734,7 +734,8 @@ print(compute_correlation.description)
 # Smolagents automatically builds the tool description from the function
 # signature, type hints, and docstring. Unlike Q4, where the JSON schema
 # was created manually, smolagents generates it for me.
-# As the developer, I need to provide typed parameters and clear, detailed docstring.
+# As the developer, I need to provide clear type hints and a useful
+# docstring so smolagents can generate accurate metadata.
 
 # Q8).
 # === TOOL CALLING AGENT ===

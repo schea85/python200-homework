@@ -150,9 +150,11 @@ def get_top_n_countries(column: str, year: int, n: int = 5) -> dict:
     
     top_countries = filtered.sort_values(column, ascending=False).head(n)
     
-    return {
-        "countries": top_countries[["Country", column]].to_dict("records")
-    }
+    top_countries = top_countries[["Country", column]]
+    
+    return top_countries.rename(
+        columns={"Country": "country"}
+    ).to_dict("records")
     
 # --- Task 2: Build the Agent ---
 model = OpenAIServerModel(api_key=api_key, model_id="gpt-4o-mini")
@@ -174,32 +176,32 @@ agent = CodeAgent(
 )
 
 # --- Task 3: Run Guided Queries ---
-queries = [
-    "Load the happiness data and tell me its shape and column names.",
-    "Summarize the happiness_score column.",
-    "What is the correlation between gdp_per_capita and happiness_score? Is it statistically significant?",
-    "Show me the top 5 happiest countries in 2020.",
-    "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs/happiness_by_region.png.",
-]
+# queries = [
+#     "Load the happiness data and tell me its shape and column names.",
+#     "Summarize the happiness_score column.",
+#     "What is the correlation between gdp_per_capita and happiness_score? Is it statistically significant?",
+#     "Show me the top 5 happiest countries in 2020.",
+#     "Plot happiness_score over the years as a line chart, with one line per region. Save the plot to outputs/happiness_by_region.png.",
+# ]
 
-for query in queries:
-    print(f"\n--- Query: {query} ---")
-    response = agent.run(query, reset=False)
-    print(response)
+# for query in queries:
+#     print(f"\n--- Query: {query} ---")
+#     response = agent.run(query, reset=False)
+#     print(response)
     
 # --- Task 4: My Own Questions ---
-my_query_1 = "Using the loaded dataset, what was the average happiness score for 2019?"
-response_1 = agent.run(my_query_1, reset=False)
-print(response_1)
+# my_query_1 = "Using the loaded dataset, what was the average happiness score for 2019?"
+# response_1 = agent.run(my_query_1, reset=False)
+# print(response_1)
 # Comments:
 # The agent generated its own code instead of using the loaded
 # dataset and mostly hallucinated.
 # The agent created a mock dataset after encountering an error;
 # so the result not based on the actual World Happiness data.
 
-my_query_2 = "What are the top 3 happiest countries in 2019?"
-response_2 = agent.run(my_query_2, reset=False)
-print(response_2)
+# my_query_2 = "What are the top 3 happiest countries in 2019?"
+# response_2 = agent.run(my_query_2, reset=False)
+# print(response_2)
 # Comments: 
 # The agent was able to answer this question correctly.
 # It used the available tools to get the answer.
