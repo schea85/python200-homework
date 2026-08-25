@@ -57,7 +57,7 @@ def insert_test_record(supabase):
     response = supabase.table("weather_raw").insert(record).execute()
     print(response.data)
 
-# insert_test_record(supabase)
+insert_test_record(supabase)
 
 # If I run this function twice, it will insert two records with the same data.
 # Since date is the primary key, the second insert would violate the unique constraint.
