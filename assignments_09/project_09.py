@@ -43,7 +43,7 @@ records = [
         "temperature_2m_max": daily["temperature_2m_max"][i],
         "temperature_2m_min": daily["temperature_2m_min"][i],
         "precipitation_sum": daily["precipitation_sum"][i],
-        "wind_speed_10m_max": daily["precipitation_sum"][i],
+        "wind_speed_10m_max": daily["wind_speed_10m_max"][i],
     }
     for i in range(len(daily["time"]))
 ]
@@ -88,6 +88,8 @@ print(f"Rows in weather_raw: {count_response.count}")
 # first and last record
 first = supabase.table("weather_raw").select("*").eq("date", "2020-01-01").execute()
 last = supabase.table("weather_raw").select("*").eq("date", "2020-12-31").execute()
+july_fourth = supabase.table("weather_raw").select("*").eq("date", "2020-07-04").execute()
 
 print("First record:", first.data)
 print("Last record:", last.data)
+print("July 4:", july_fourth)
