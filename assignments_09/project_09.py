@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from supabase import create_client
 
 
+
 # --- Step 1: Extract ----
 
 # fetch
@@ -28,9 +29,9 @@ response.raise_for_status()
 data = response.json()
 
 # print summary of data received from API
-print(f"Received {len(data["daily"]["time"])} days of weather data.")
-print(f"Data range: {data["daily"]["time"][0]} to {data["daily"]["time"][-1]}")
-print(f"Columns: {list(data["daily"].keys())}")
+print(f"Received {len(data['daily']['time'])} days of weather data.")
+print(f"Data range: {data['daily']['time'][0]} to {data['daily']['time'][-1]}")
+print(f"Columns: {list(data['daily'].keys())}")
 
 # --- Step 2: Transform ---
 
@@ -92,4 +93,4 @@ july_fourth = supabase.table("weather_raw").select("*").eq("date", "2020-07-04")
 
 print("First record:", first.data)
 print("Last record:", last.data)
-print("July 4:", july_fourth)
+print("July 4th:", july_fourth.data)
