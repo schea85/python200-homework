@@ -125,3 +125,14 @@ good_days = sum(row['good_for_running'] for row in sample_check)
 print(f"Number of good running days: {good_days}")
     
 # --- Step 6: Reflect ---
+
+# 1.) The ML classifier was trained using weather data from Charlotte, NC, so its predictions
+# may be less accurate for a different city. Because the weather patterns can vary from location to 
+# location.
+
+# 2.) The LLM does not override the ML prediction. It uses the prediction and weather data
+# to create a recommendation, so it is mainly adding an explanation to the ML result.
+
+# 3.) If scaling for 500,000 records; my main concern would be cost and processing time from 
+# making so many LLM API calls. I would reduce API calls or process the records in batches to
+# make it more efficient.
