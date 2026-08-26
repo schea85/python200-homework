@@ -1,3 +1,5 @@
+import time
+
 # --- ML vs. LLM in Pipelines ---
 
 # ML/LLM Q1:
