@@ -41,8 +41,9 @@ SYSTEM_PROMPT = (
     "Be direct and practical. Do not use bullet points or headers."
 )
 
-# The validation logic would need to allow two sentences instead of requiring exactly
-# one sentence. Adjust the sentence count.
+# The validation logic would need to be changed from expecting one sentence
+# to allowing exactly two sentences. Any sentence-count or length validation should be adjusted
+# to validate the two-part response.
 
 # Prompt Q2:
 def call_with_retry(client, messages, max_retries=3):
