@@ -83,7 +83,7 @@ def transform(raw_records: list) -> list:
         for r in supabase.table("weather_enriched").select("date").execute().data
     }
     to_process = [r for r in raw_records if r["date"] not in already_done]
-    print(f"Records to transform: {len(to_process)}. (Skipping {len(already_done)}) already enriched)")
+    print(f"Records to transform: {len(to_process)} (skipping {len(already_done)}) already enriched)")
     
     if not to_process:
         print("All records already enriched - nothing to do.")
