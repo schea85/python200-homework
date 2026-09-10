@@ -135,7 +135,7 @@ def transform(raw_records: list) -> list:
             record["llm_summary"] = "Recommendation unavailable."
 
         if (i + 1) % 50 == 0:
-            print(f"  LLM enriched {i + 1} / {len(enrichment_records)} records")
+            print(f"  Processed {i + 1} / {len(enrichment_records)} records")
 
     print(f"Transform complete: {len(enrichment_records)} records enriched")
     return enrichment_records
