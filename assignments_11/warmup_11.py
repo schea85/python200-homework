@@ -13,7 +13,7 @@ from prefect.logging import get_run_logger
 # retries or monitoring. It can remain a regular Python helper function.
 
 # Prefect Q2:
-@task(retries=3, retry_delay_seconds=30)
+@task(name="call_api", retries=3, retry_delay_seconds=30)
 
 # Prefect Q3:
 # I would open the failed flow run in the Prefect UI and select the transform task.

@@ -89,7 +89,7 @@ def transform(raw_records: list) -> list:
         print("All records already enriched - nothing to do.")
         return []
     
-    # ML classify
+    # ML classify - json loaded at top of script
     clf = joblib.load("models/weather_classifier.pkl")
     df = pd.DataFrame(to_process)
     X = df[FEATURES]
@@ -155,7 +155,7 @@ def load_enriched(enrichment_records: list) -> None:
     )
     print(f"Upserted {len(response.data)} rows into weather_enriched")
     
-# === Flow ===
+# === Prefect Flow ===
 
 @flow(log_prints=True)
 def etl_pipeline():
