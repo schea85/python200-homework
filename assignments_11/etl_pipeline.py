@@ -1,3 +1,5 @@
+# https://youtu.be/9iG44VIasAc
+
 import os
 import json
 from dotenv import load_dotenv
