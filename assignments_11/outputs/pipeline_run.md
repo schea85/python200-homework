@@ -1,0 +1,8 @@
+# ETL Pipeline Projection Reflection
+
+
+The pipeline did not work on my first attempt because I accidentally ran both `prefect server start` and `python etl_pipeline.py` in the same terminal, but I fixed the issue by clicking on the Add (+) button to open another terminal.  After making this change, the pipeline ran successfully, all tasks completed without any retries, and 366 records were retrieved and loaded with the flow finishing in a Completed state.
+
+Overall, the LLM summaries in the weather_enriched table seemed generally accurate and useful because they turned the weather data into simple, understandable recommendations.  For example, one day classified as good for running had a summary explaining that the 21.9°C high and 10.0°C low, no precipitation, and light winds made it a decent day for running despite moderate confidence in the prediction, which I thought matched the weather conditions well.  Since Washington, D.C. experiences all four seasons, I noticed that there were not many days classified as good for running, so next time I would adjust the weather thresholds to classify more suitable days as good for running.
+
+Currently, I have to run the pipeline myself; if this were deployed, I would add a Prefect schedule so it automatically runs every morning.  The schedule would allow the pipeline to fetch the previous day's forecast and enrich the data without me having to run it manually, making the pipeline more automated and useful for a daily weather application.
